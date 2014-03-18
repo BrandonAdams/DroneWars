@@ -53,6 +53,13 @@
      <Compile Include="Assets\Scripts\Server.cs" />
      <Compile Include="Assets\Scripts\SpawnScript.cs" />
      <Compile Include="Assets\Scripts\aStationManager.cs" />
+ <Reference Include="Assembly-UnityScript-firstpass">
+ <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
+      <Project>{AC18FBFB-6F53-E44F-A61D-7928FB93084C}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

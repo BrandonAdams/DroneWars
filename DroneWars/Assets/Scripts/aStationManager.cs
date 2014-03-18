@@ -3,10 +3,8 @@ using System.Collections;
 
 public class aStationManager : MonoBehaviour {
 
-	private Vector3[] spawnPointLocations;
-	private Vector3[] availableSpawnPoints;
+
 	private GameObject[] players;
-	private int positionsTaken;
 	private Vector3 droneCameraPosition, lobbyCameraPosition;
 	private Quaternion lobbyCameraRotation;
 	private bool gameStarted, gameActive, gameOver;
@@ -25,6 +23,7 @@ public class aStationManager : MonoBehaviour {
 
 	public Camera myCamera;
 	public GameObject AbandonedStation;
+	public GameObject[] stationSpawnPointLocations;
 
 	//create enums to access the different available game states
 	public enum GameModes { FreeForAll, Idle };
@@ -34,12 +33,10 @@ public class aStationManager : MonoBehaviour {
 	public GameMaps gameMap = GameMaps.None;
 
 	// Use this for initialization
-	void Start () {
-		spawnPointLocations = new Vector3[6]; 
+	void Start () {		 
 		gameStarted = false;
 		lobbyCameraPosition = myCamera.transform.position;
 		lobbyCameraRotation = myCamera.transform.rotation;
-		positionsTaken = 0;
 	}
 	
 	// Update is called once per frame
@@ -47,6 +44,7 @@ public class aStationManager : MonoBehaviour {
 		if(gameStarted)
 		{
 			gameStarted = false;
+			gameMap = GameMaps.AbandonedStation;  //THIS NEEDS TO CHANGE ********** NOT PERMANENT!!!!!!!!!!!!!!!!!!!!!!!!!
 			//have the host collect all the players playing
 			players = GameObject.FindGameObjectsWithTag("Drone");
 			//have the host place all the players around the map
@@ -62,6 +60,8 @@ public class aStationManager : MonoBehaviour {
 					myCamera.transform.position = droneCameraPosition;
 					Quaternion playerRotation = players[i].transform.rotation;
 					myCamera.transform.rotation = playerRotation;
+
+
 				}
 			}
 
@@ -141,22 +141,31 @@ public class aStationManager : MonoBehaviour {
 	 **/
 	void spawnPlayers()
 	{
-
-		int spawnPoint; 
-		for(int i = 0; i < players.Length; i++)
+		Debug.Log("In spawn Players");
+		//move players to the correct spawnpoint locations via which map is being played
+		switch(gameMap)
 		{
-			spawnPoint = Random.Range(0, (availableSpawnPoints.Length - 1));
-			Debug.Log(spawnPointLocations.Length);
-			Vector3 newPosition = (Vector3)availableSpawnPoints[spawnPoint];
-			Debug.Log(newPosition);
-			//players[i].transform.position = newPosition;
-			positionsTaken++;
+		case GameMaps.AbandonedStation:
+			int count = stationSpawnPointLocations.Length;
+			Vector3 playerPosition;
+			for(int i = 0; i < players.Length; i++)
+			{
+				GameObject currentPlayer = players[i];
 
-			//availableSpawnPoints = new Vector3[6 - positionsTaken];
-			//for(int i = 0; i <
+					int randomPoint = Random.Range(0, count);
+					playerPosition = stationSpawnPointLocations[randomPoint].transform.position;
+					currentPlayer.transform.position = playerPosition;
+				GameObject cam = GameObject.Find("Main Camera");
+				cam.AddComponent<MouseLook>();
+				if(players.Length > 1)
+					networkView.RPC("placePlayer", RPCMode.Others, currentPlayer, playerPosition);
+			}
+			
+			break;
+		default:
+			Debug.Log(gameMap);
+			break;
 		}
-
-		networkView.RPC("placePlayers", RPCMode.Others, players);
 
 	}
 
@@ -165,12 +174,30 @@ public class aStationManager : MonoBehaviour {
 	/**
 	 * A method for checking the distance players are from each other
 	 **/
-	void checkPlayerDistances(GameObject thePlayer, GameObject[] listOfPlayers)
+	float checkPlayerDistances(GameObject thePlayer)
 	{
-		for(int i = 0; i < listOfPlayers.Length ; i++)
+		float distance = 5;
+		for(int i = 0; i < players.Length ; i++)
 		{
 			//action to take if players are close enough
+			if(players[i] == thePlayer)
+				continue;
+			else{
+				float calcDistance = Vector3.Distance(players[i].transform.position, thePlayer.transform.position);
+				if(calcDistance <= distance)
+				{
+					distance = calcDistance;
+				}
+			}
 		}
+		return distance;
+	}
+
+	[RPC]
+	void placePlayer(GameObject player, Vector3 position)
+	{
+		player.transform.position = position;
+
 	}
 
 }
