@@ -56,10 +56,12 @@ public class aStationManager : MonoBehaviour {
 				if(view.isMine)
 				{
 					droneCameraPosition = players[i].transform.position;
-					droneCameraPosition.y -= 10;
+					droneCameraPosition.z += 5;
 					myCamera.transform.position = droneCameraPosition;
 					Quaternion playerRotation = players[i].transform.rotation;
 					myCamera.transform.rotation = playerRotation;
+					myCamera.transform.parent = players[i].transform;
+					players[i].AddComponent<CameraScript>();
 
 
 				}
@@ -156,7 +158,7 @@ public class aStationManager : MonoBehaviour {
 					playerPosition = stationSpawnPointLocations[randomPoint].transform.position;
 					currentPlayer.transform.position = playerPosition;
 				GameObject cam = GameObject.Find("Main Camera");
-				cam.AddComponent<MouseLook>();
+				//cam.AddComponent<MouseLook>();
 				if(players.Length > 1)
 					networkView.RPC("placePlayer", RPCMode.Others, currentPlayer, playerPosition);
 			}
