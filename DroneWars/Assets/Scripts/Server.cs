@@ -129,10 +129,10 @@ public class Server : MonoBehaviour {
 			//button to join the game
 			if(GUI.Button(new Rect(100, 250, 250.0f, selectingButtonHeight), "Create Game"))
 			{
+				startServer(connectPort);
 				inJoinGame = true;
 				inHost = false;
 				isHost = true;
-				startServer(connectPort);
 			}
 			if(GUI.Button (new Rect(lobbyWindowWidth - 370.0f, (lobbyWindowHeight - updatingButtonHeight) - 20, 350.0f, updatingButtonHeight), "Return to Main Lobby"))
 			{
@@ -193,15 +193,6 @@ public class Server : MonoBehaviour {
 		{
 			GUI.Label(new Rect((lobbyWindowWidth / 2) - 90.0f, 20, 190.0f, 30.0f), "GAME LOBBY");
 
-			GameObject[] listOfPlayers = GameObject.FindGameObjectsWithTag("Drone");
-			float labelYPosition = 110;
-			for(int i = 0; i < listOfPlayers.Length; i++)
-			{
-				string playerName = listOfPlayers[i].GetComponent<PlayerLabel>().PlayerName;
-				GUI.Label (new Rect(90, labelYPosition, 450.0f, 40.0f), playerName);
-				labelYPosition += 40;
-			}
-
 			if(isHost)
 			{
 				if(GUI.Button (new Rect(lobbyWindowWidth - 370.0f, (lobbyWindowHeight - updatingButtonHeight) - 20, 350.0f, updatingButtonHeight), "Disconnect Server"))
@@ -229,6 +220,19 @@ public class Server : MonoBehaviour {
 				}
 
 
+			}
+
+			GameObject[] listOfPlayers = GameObject.FindGameObjectsWithTag("Drone");
+			float labelYPosition = 110;
+			if(listOfPlayers.Length > 0)
+			{
+				for(int i = 0; i < listOfPlayers.Length; i++)
+				{
+					//Debug.Log (listOfPlayers[i]);
+					string pName = listOfPlayers[i].GetComponent<PlayerLabel>().PlayerName;
+					GUI.Label (new Rect(90, labelYPosition, 450.0f, 40.0f), pName);
+					labelYPosition += 40;
+				}
 			}
 
 		}
