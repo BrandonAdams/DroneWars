@@ -368,16 +368,7 @@ public class CameraScript : MonoBehaviour {
 			}
 
 			#endregion Movement
-			#region attack
-			if(Input.GetKey (KeyCode.Mouse0))
-			{
-				Debug.Log("FIRE 1");
-			}
-			if(Input.GetKeyDown (KeyCode.Mouse1))
-			{
-				Debug.Log ("FIRE 2");
-			}
-			#endregion
+
 		}
 
 		#region checkGrav

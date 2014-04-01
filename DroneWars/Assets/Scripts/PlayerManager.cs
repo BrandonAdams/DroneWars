@@ -2,52 +2,107 @@
 using System.Collections;
 
 public class PlayerManager : MonoBehaviour {	
-	
-	private GameObject gameCamera;
-	
-	private  GameObject[] players;
-	public GameObject[] Players {get{return players;}}	
-	private bool gameOver = false;
-	private NetworkViewID myID;
-	private NetworkView myView;
 
-	private int[] spawnPointNumbers;
-	public int[] SpawnPointNumbers{
-		get { return spawnPointNumbers; }
-		set { spawnPointNumbers = value; }
-	}
+	//private variables
+	private GameObject _gameCamera;	
+	private  GameObject[] _players;
+	private ArrayList _bullets;
+	private bool _isGameOver, _isGameStarted, _isFiring = false;
+	private bool _isTheHost;
+	private NetworkViewID _myID;
+	private NetworkView _myView;
+	private int[] _spawnPointNumbers;
+	private int _bulletFiringTime, _firingTimer, _bulletCounter;
 
-	private bool isTheHost;
+	//public variables
+	public Bullet bullet;
+
+	//public accessor and getters
 	public bool IsTheHost{
-		get { return isTheHost; }	
-		set { isTheHost = value; }
+		get { return _isTheHost; }	
+		set { _isTheHost = value; }
+	}
+	public int[] SpawnPointNumbers{
+		get { return _spawnPointNumbers; }
+		set { _spawnPointNumbers = value; }
+	}
+	public GameObject[] Players {
+		get{return _players;}
+	}
+	public bool IsGameStarted
+	{
+		get { return _isGameStarted;}
+		set { _isGameStarted = value; }
 	}
 
 	// Use this for initialization
 	void Start () 
 	{
-		myID = this.networkView.viewID;
-		myView = NetworkView.Find(myID);
-		//making a check to see if the player network id is the same when created and instantiated
-		Debug.Log(myID + " : This code is located in PlayerManager in the start method.");
+		_myID = this.networkView.viewID;
+		_myView = NetworkView.Find(_myID);
+		_bullets = new ArrayList();
+		_firingTimer = _bulletCounter = 0;
+		_bulletFiringTime = 5;
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{        
-		if(gameOver)
+		if(_isGameOver)
 		{
 			
 		}
-		else
+		else if(_isGameStarted)
 		{ 		
-			players = GameObject.FindGameObjectsWithTag("Drone");
+			//players = GameObject.FindGameObjectsWithTag("Drone");
+			checkKeyDown();
+			checkKeyUp();
+
+			if(_isFiring)
+			{
+
+				_firingTimer++;
+				if(_firingTimer > _bulletFiringTime)
+				{
+					//create a bullet and place it just in front of the player
+					GameObject myPlayer = GameObject.Find(_myView.observed.name);
+					Vector3 bulletSpawnPosition = myPlayer.transform.position; 
+					bulletSpawnPosition += myPlayer.transform.forward * 8;
+					bullet.initialize(2.0f, 3.0f, _myView.observed.name, _bulletCounter);
+					Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 0);
+					_bullets.Add(bullet);
+					//reset the firing timer
+					_firingTimer = 0;
+					_bulletCounter++;
+
+				}
+			}
+
+
 		}
 	}
 	
 	void OnGUI()
 	{
 		//DISPLAY PLAYER HUD HERE			
+	}
+
+	void checkKeyDown()
+	{
+		if(Input.GetKeyDown (KeyCode.Mouse0))
+		{
+			_isFiring = true;
+		}
+
+	}
+
+	void checkKeyUp()
+	{
+		if(Input.GetKeyUp (KeyCode.Mouse0))
+		{
+			_isFiring = false;
+		}
+
 	}
 	
 	void checkForWinningPlayer(GameObject[] playerList)
@@ -87,5 +142,6 @@ public class PlayerManager : MonoBehaviour {
 			}		
 		}
 	}//END checkPlayerDistances
+
 	
 }

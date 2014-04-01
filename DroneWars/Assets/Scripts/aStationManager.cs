@@ -62,7 +62,7 @@ public class aStationManager : MonoBehaviour {
 					myCamera.transform.rotation = playerRotation;
 					myCamera.transform.parent = players[i].transform;
 					players[i].AddComponent<CameraScript>();
-
+					players[i].GetComponent<PlayerManager>().IsGameStarted = true;
 
 				}
 			}
@@ -157,6 +157,8 @@ public class aStationManager : MonoBehaviour {
 					int randomPoint = Random.Range(0, count);
 					playerPosition = stationSpawnPointLocations[randomPoint].transform.position;
 					currentPlayer.transform.position = playerPosition;
+
+				currentPlayer.GetComponent<SphereCollider>().enabled = true;
 				GameObject cam = GameObject.Find("Main Camera");
 				//cam.AddComponent<MouseLook>();
 				if(players.Length > 1)
