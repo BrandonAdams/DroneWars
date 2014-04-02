@@ -45,7 +45,8 @@ public class Server : MonoBehaviour {
 	private string tempName = "Guest";
 
 
-
+	private AudioSource _selectionSource;
+	private AudioClip _selectionClip;
 	#endregion
 
 	// Use this for initialization
@@ -57,6 +58,7 @@ public class Server : MonoBehaviour {
 		lobbyWindowWidth = screenHalfWidth + (screenHalfWidth / 2);
 		lobbyWindowHeight = Screen.height - 60;
 		lobbyWindow = new Rect(lobbyXPosition,lobbyYPosition, lobbyWindowWidth, lobbyWindowHeight);
+
 	}
 	#region OnGUI and Update Method
 	void OnGUI()
@@ -238,27 +240,32 @@ public class Server : MonoBehaviour {
 		}
 		else
 		{
+
 			GUI.Label(new Rect((lobbyWindowWidth / 2) - 90.0f, 20, 180.0f, 30.0f), "MAIN LOBBY");
 			GUI.Label(new Rect(70, 70, 200.0f, 30.0f), "Select a Drone");
 			if(GUI.Button (new Rect(90, 110, 150.0f, updatingButtonHeight), "Polarity"))
 			{
 				//make playerPrefab this prefab
 				_selectedDrone = 1;
+				audio.Play();
 			}
 			if(GUI.Button (new Rect(90, 160, 150.0f, updatingButtonHeight), "Trident"))
 			{
 				//make playerPrefab this prefab
 				_selectedDrone = 2;
+				audio.Play();
 			}
 			if(GUI.Button (new Rect(90, 210, 150.0f, updatingButtonHeight), "Vistige"))
 			{
 				//make playerPrefab this prefab
 				_selectedDrone = 3;
+				audio.Play();
 			}
 			if(GUI.Button (new Rect(90, 260, 150.0f, updatingButtonHeight), "Sniden"))
 			{
 				//make playerPrefab this prefab
 				_selectedDrone = 4;
+				audio.Play();
 			}			
 
 			//PLACE IMAGE OF DRONE HERE		
