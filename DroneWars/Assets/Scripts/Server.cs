@@ -207,7 +207,8 @@ public class Server : MonoBehaviour {
 					//launch the game here
 					GameObject gameManager = GameObject.Find("GameManager_GO");
 					currentState = ServerState.Initialized;
-					gameManager.GetComponent<aStationManager>().GameStarted = true;
+					//gameManager.GetComponent<aStationManager>().GameStarted = true; 
+					networkView.RPC("startUpGame", RPCMode.All);  //start the game
 				}
 			}
 			else
@@ -389,10 +390,10 @@ public class Server : MonoBehaviour {
 	{
 		//Find the game object in charge of creating a new player and create the selected drone
 		GameObject spawnManager = GameObject.Find("SpawnManager_GO");
-		GameObject newPlayer = spawnManager.GetComponent<SpawnScript>().SpawnPlayer(1);
+		GameObject newPlayer = spawnManager.GetComponent<SpawnScript>().SpawnPlayer(2); //TODO fix this hack and make it dynamic
 		newPlayer.GetComponent<PlayerManager>().IsTheHost = isHost;
 		//change the name of the new player in the heirarchy to the player's name
-		GameObject.Find("tempDrone(Clone)").name = playerName;
+		GameObject.Find("tridentDrone(Clone)").name = playerName; //TODO Fix this hack and make it dynamic
 		//change the playerName variable in the PlayerLabel class to display the players name in game
 		newPlayer.GetComponent<PlayerLabel>().PlayerName = playerName;
 		//get the network view id of the new player
@@ -427,6 +428,15 @@ public class Server : MonoBehaviour {
 			//change the playerName of the object using the gameObject to reference that variable
 			newPlayer.GetComponent<PlayerLabel>().PlayerName = theName;			
 		}		
+	}
+
+	[RPC]
+	void startUpGame()
+	{
+		//get the game manager object and change the gameStarted variable to true to initialize camera settings and player placement
+		GameObject gameManager = GameObject.Find("GameManager_GO");
+		currentState = ServerState.Initialized;
+		gameManager.GetComponent<aStationManager>().GameStarted = true;
 	}
 
 	#endregion

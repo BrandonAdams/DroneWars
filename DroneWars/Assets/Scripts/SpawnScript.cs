@@ -5,10 +5,11 @@ public class SpawnScript : MonoBehaviour {
 	
 	/**
 	public GameObject polarityPrefab;
-	public GameObject tridentPrefab;
+
 	public GameObject snidenPrefab;
 	public GameObject vistigePrefab;  
 	**/
+	public GameObject tridentPrefab;
 	public GameObject tempDrone;
 	private GameObject playerPrefab;			
 
@@ -32,24 +33,28 @@ public class SpawnScript : MonoBehaviour {
 		{
 			case 1:
 			playerPrefab = tempDrone; //DELETE THIS WHEN ACTUAL DRONES ARE IMPLEMENTED
-			// playerPrefab = polarityPrefab; //uncomment when polarity drone implemented
+			//playerPrefab.GetComponent<SphereCollider>().enabled = false;
+			//playerPrefab = polarityPrefab; //uncomment when polarity drone implemented
 				break;
 			case 2:
-			playerPrefab = tempDrone;
-			// playerPrefab = tridentPrefab; //uncomment when polarity drone implemented
+			//playerPrefab = tempDrone;
+			//playerPrefab.GetComponent<SphereCollider>().enabled = false;
+			playerPrefab = tridentPrefab; //uncomment when trident drone implemented
+			//playerPrefab.GetComponent<MeshCollider>().enabled = false;
 				break;
 			case 3:
 			playerPrefab = tempDrone;
-			// playerPrefab = vistigePrefab; //uncomment when polarity drone implemented
+			//playerPrefab.GetComponent<SphereCollider>().enabled = false;
+			//playerPrefab = vistigePrefab; //uncomment when vistige drone implemented
 				break;
 			case 4:
 			playerPrefab = tempDrone;
-			// playerPrefab = snidenPrefab; //uncomment when polarity drone implemented
+			//playerPrefab.GetComponent<SphereCollider>().enabled = false;
+			//playerPrefab = snidenPrefab; //uncomment when sniden drone implemented
 				break;
 			default:
 				break;
-		}
-		playerPrefab.GetComponent<SphereCollider>().enabled = false; //TODO: CHANGE THIS TO THE COLLIDER OF THE PREFAB WHEN THEY ARE BROUGHT IN
+		}		 
 
 		//Network.Instantiate(PlayerPrefab, sPoint.transform.position, Quaternion.identity, 0);
 		GameObject gameObject = (GameObject)Network.Instantiate(playerPrefab, sPoint, Quaternion.identity, 0);

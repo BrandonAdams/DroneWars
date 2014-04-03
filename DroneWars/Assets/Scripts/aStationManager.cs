@@ -48,7 +48,16 @@ public class aStationManager : MonoBehaviour {
 			//have the host collect all the players playing
 			players = GameObject.FindGameObjectsWithTag("Drone");
 			//have the host place all the players around the map
-			spawnPlayers ();
+			for(int i = 0; i < players.Length; i++)
+			{
+				NetworkView view = players[i].networkView;
+				GameObject thePlayer = view.observed.gameObject;
+
+				if(thePlayer.GetComponent<PlayerManager>().IsTheHost)
+				{
+					spawnPlayers ();
+				}
+			}
 			//get the starting position for our camera
 			for(int i = 0; i < players.Length; i++)
 			{
@@ -63,12 +72,9 @@ public class aStationManager : MonoBehaviour {
 					myCamera.transform.parent = players[i].transform;
 					players[i].AddComponent<CameraScript>();
 					players[i].GetComponent<PlayerManager>().IsGameStarted = true;
-
+					networkView.RPC("sendMessage", RPCMode.All, view.observed.name + " camera moved");
 				}
 			}
-
-			Debug.Log(players.Length);
-			Debug.Log(myCamera.transform.position);
 		}
 		else if(gameActive)
 		{
@@ -143,7 +149,7 @@ public class aStationManager : MonoBehaviour {
 	 **/
 	void spawnPlayers()
 	{
-		Debug.Log("In spawn Players");
+
 		//move players to the correct spawnpoint locations via which map is being played
 		switch(gameMap)
 		{
@@ -156,18 +162,25 @@ public class aStationManager : MonoBehaviour {
 
 					int randomPoint = Random.Range(0, count);
 					playerPosition = stationSpawnPointLocations[randomPoint].transform.position;
-					currentPlayer.transform.position = playerPosition;
+					//currentPlayer.transform.position = playerPosition;
 
-				currentPlayer.GetComponent<SphereCollider>().enabled = true;
-				GameObject cam = GameObject.Find("Main Camera");
+				//currentPlayer.GetComponent<SphereCollider>().enabled = true;
+
 				//cam.AddComponent<MouseLook>();
 				if(players.Length > 1)
-					networkView.RPC("placePlayer", RPCMode.Others, currentPlayer, playerPosition);
+				{
+					networkView.RPC("placePlayer", RPCMode.All, currentPlayer, playerPosition);
+				}
+				else{
+					currentPlayer.transform.position = playerPosition;
+					GameObject cam = GameObject.Find("Main Camera");
+				}
+					
 			}
 			
 			break;
 		default:
-			Debug.Log(gameMap);
+			//Debug.Log(gameMap);
 			break;
 		}
 
@@ -198,10 +211,16 @@ public class aStationManager : MonoBehaviour {
 	}
 
 	[RPC]
+	void sendMessage(string msg)
+	{
+		Debug.Log(msg);
+	}
+
+	[RPC]
 	void placePlayer(GameObject player, Vector3 position)
 	{
 		player.transform.position = position;
-
+		GameObject cam = GameObject.Find("Main Camera");
 	}
 
 }
