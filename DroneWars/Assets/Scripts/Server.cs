@@ -129,10 +129,10 @@ public class Server : MonoBehaviour {
 			//button to join the game
 			if(GUI.Button(new Rect(100, 250, 250.0f, selectingButtonHeight), "Create Game"))
 			{
+				isHost = true;
 				startServer(connectPort);
 				inJoinGame = true;
 				inHost = false;
-				isHost = true;
 			}
 			if(GUI.Button (new Rect(lobbyWindowWidth - 370.0f, (lobbyWindowHeight - updatingButtonHeight) - 20, 350.0f, updatingButtonHeight), "Return to Main Lobby"))
 			{
@@ -180,6 +180,7 @@ public class Server : MonoBehaviour {
 			{
 				//JOIN THE SELECTED SERVER HERE
 				inJoinGame = true;
+				isHost = false;
 				inClient = false;
 				connectToServer(connectionIP, connectPort);
 			}

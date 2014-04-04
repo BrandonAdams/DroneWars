@@ -52,7 +52,7 @@ public class aStationManager : MonoBehaviour {
 			{
 				NetworkView view = players[i].networkView;
 				GameObject thePlayer = view.observed.gameObject;
-
+				
 				if(thePlayer.GetComponent<PlayerManager>().IsTheHost)
 				{
 					spawnPlayers ();
@@ -75,6 +75,8 @@ public class aStationManager : MonoBehaviour {
 					networkView.RPC("sendMessage", RPCMode.All, view.observed.name + " camera moved");
 				}
 			}
+			//start updating gameplay material
+			gameActive = true;
 		}
 		else if(gameActive)
 		{
@@ -156,31 +158,26 @@ public class aStationManager : MonoBehaviour {
 		case GameMaps.AbandonedStation:
 			int count = stationSpawnPointLocations.Length;
 			Vector3 playerPosition;
+			
 			for(int i = 0; i < players.Length; i++)
 			{
 				GameObject currentPlayer = players[i];
-
-					int randomPoint = Random.Range(0, count);
-					playerPosition = stationSpawnPointLocations[randomPoint].transform.position;
-					//currentPlayer.transform.position = playerPosition;
-
-				//currentPlayer.GetComponent<SphereCollider>().enabled = true;
-
-				//cam.AddComponent<MouseLook>();
+				Debug.Log("moved player " + currentPlayer.name);
+				
+				int randomPoint = Random.Range(0, count);
+				playerPosition = stationSpawnPointLocations[randomPoint].transform.position;
+				NetworkViewID currentPlayerViewID = currentPlayer.networkView.viewID;
 				if(players.Length > 1)
 				{
-					networkView.RPC("placePlayer", RPCMode.All, currentPlayer, playerPosition);
+					networkView.RPC("placePlayer", RPCMode.All, currentPlayerViewID, playerPosition);
 				}
 				else{
 					currentPlayer.transform.position = playerPosition;
 					GameObject cam = GameObject.Find("Main Camera");
-				}
-					
-			}
-			
+				}					
+			}			
 			break;
 		default:
-			//Debug.Log(gameMap);
 			break;
 		}
 
@@ -217,10 +214,11 @@ public class aStationManager : MonoBehaviour {
 	}
 
 	[RPC]
-	void placePlayer(GameObject player, Vector3 position)
+	void placePlayer(NetworkViewID playerNetworkID, Vector3 position)
 	{
-		player.transform.position = position;
-		GameObject cam = GameObject.Find("Main Camera");
+		NetworkView playerView = NetworkView.Find(playerNetworkID);
+		GameObject playerToPlace = playerView.observed.gameObject;
+		playerToPlace.transform.position = position;
 	}
 
 }
