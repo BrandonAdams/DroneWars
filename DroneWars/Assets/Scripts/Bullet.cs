@@ -58,7 +58,7 @@ public class Bullet : MonoBehaviour {
 				if(liveBullets[i].networkView.isMine)
 				{
 					Debug.Log("Destroyed bullet");
-					Destroy(liveBullets[i]);
+					Network.Destroy(liveBullets[i]);
 					break;
 				}
 			}
