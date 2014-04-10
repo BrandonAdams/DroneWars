@@ -57,6 +57,7 @@ public class Server : MonoBehaviour {
 		lobbyWindowWidth = screenHalfWidth + (screenHalfWidth / 2);
 		lobbyWindowHeight = Screen.height - 60;
 		lobbyWindow = new Rect(lobbyXPosition,lobbyYPosition, lobbyWindowWidth, lobbyWindowHeight);
+		audio.volume = 3;
 	}
 	#region OnGUI and Update Method
 	void OnGUI()
@@ -246,6 +247,7 @@ public class Server : MonoBehaviour {
 			{
 				//make playerPrefab this prefab
 				_selectedDrone = 1;
+				audio.Play();
 			}
 			if(GUI.Button (new Rect(90, 160, 150.0f, updatingButtonHeight), "Trident"))
 			{

@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerManager : MonoBehaviour {	
 
 	//private variables
-	private GameObject _gameCamera;	
+	private GameObject _gameCamera, whirringBladesObject1, whirringBladesObject2;	
 	private  GameObject[] _players;
 	private ArrayList _bullets;
 	private bool _isGameOver, _isGameStarted, _isFiring = false;
@@ -13,6 +13,7 @@ public class PlayerManager : MonoBehaviour {
 	private NetworkView _myView;
 	private int[] _spawnPointNumbers;
 	private int _bulletFiringTime, _firingTimer, _bulletCounter;
+
 
 	//public variables
 	public Bullet bullet;
@@ -43,6 +44,7 @@ public class PlayerManager : MonoBehaviour {
 		_bullets = new ArrayList();
 		_firingTimer = _bulletCounter = 0;
 		_bulletFiringTime = 5;
+		whirringBladesObject1 = this.transform.FindChild("AudioMegaman1").gameObject;
 	}
 	
 	// Update is called once per frame
@@ -92,6 +94,8 @@ public class PlayerManager : MonoBehaviour {
 		if(Input.GetKeyDown (KeyCode.Mouse0))
 		{
 			_isFiring = true;
+			whirringBladesObject1.audio.mute = true;
+
 		}
 
 	}
@@ -101,6 +105,8 @@ public class PlayerManager : MonoBehaviour {
 		if(Input.GetKeyUp (KeyCode.Mouse0))
 		{
 			_isFiring = false;
+			whirringBladesObject1.audio.mute = false;
+
 		}
 
 	}
