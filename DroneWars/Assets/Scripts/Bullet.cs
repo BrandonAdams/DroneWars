@@ -31,14 +31,14 @@ public class Bullet : MonoBehaviour {
 	void Start () {
 		_bulletLifePeriod = 200;
 		_bulletCurrentLife = 0;
+		_speed = 4.0f;
 		_myID = this.networkView.viewID;
 		_myView = NetworkView.Find(_myID);
 	}
 
 	public void initialize(float bulletSpeed, float bulletPower, string playerName, int tagID)
 	{
-		//instantiating our variables
-		_speed = bulletSpeed;
+		this.Speed = bulletSpeed;
 		_power = bulletPower;
 		_bulletName = playerName + "Bullet" + tagID;
 		_bulletTag = tagID;
@@ -46,7 +46,8 @@ public class Bullet : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		transform.position += transform.forward * 2;
+		transform.position += transform.forward * _speed;
+		Debug.Log("speed is: " + _speed);
 		//make our bullet older
 		_bulletCurrentLife++;
 		//our bullet has died of old age

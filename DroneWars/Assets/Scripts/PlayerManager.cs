@@ -7,7 +7,7 @@ public class PlayerManager : MonoBehaviour {
 	private GameObject _gameCamera, whirringBladesObject1, whirringBladesObject2;	
 	private  GameObject[] _players;
 	private ArrayList _bullets;
-	private bool _isGameOver, _isGameStarted, _isFiring = false;
+	private bool _isGameOver, _isGameStarted, _isFiringPrimary, _isFiringSecondary = false;
 	private bool _isTheHost;
 	private NetworkViewID _myID;
 	private NetworkView _myView;
@@ -60,7 +60,7 @@ public class PlayerManager : MonoBehaviour {
 			checkKeyDown();
 			checkKeyUp();
 
-			if(_isFiring)
+			if(_isFiringPrimary)
 			{
 
 				_firingTimer++;
@@ -70,7 +70,8 @@ public class PlayerManager : MonoBehaviour {
 					GameObject myPlayer = GameObject.Find(_myView.observed.name);
 					Vector3 bulletSpawnPosition = myPlayer.transform.position; 
 					bulletSpawnPosition += myPlayer.transform.forward * 8;
-					bullet.initialize(2.0f, 3.0f, _myView.observed.name, _bulletCounter);
+					//bullet.initialize(4.0f, 3.0f, _myView.observed.name, _bulletCounter);
+					bullet.Speed = 4.0f;
 					Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 0);
 					_bullets.Add(bullet);
 					//reset the firing timer
@@ -93,9 +94,14 @@ public class PlayerManager : MonoBehaviour {
 	{
 		if(Input.GetKeyDown (KeyCode.Mouse0))
 		{
-			_isFiring = true;
+			_isFiringPrimary = true;
 			whirringBladesObject1.audio.mute = true;
 
+		}
+
+		if(Input.GetKeyDown (KeyCode.Mouse1))
+		{
+			//Fire secondary weapon here 			
 		}
 
 	}
@@ -104,11 +110,10 @@ public class PlayerManager : MonoBehaviour {
 	{
 		if(Input.GetKeyUp (KeyCode.Mouse0))
 		{
-			_isFiring = false;
+			_isFiringPrimary = false;
 			whirringBladesObject1.audio.mute = false;
 
 		}
-
 	}
 	
 	void checkForWinningPlayer(GameObject[] playerList)
