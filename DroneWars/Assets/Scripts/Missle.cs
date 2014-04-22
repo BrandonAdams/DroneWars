@@ -26,6 +26,10 @@ public class Missle : MonoBehaviour {
 	public string MissleName{
 		get { return _missleName; }
 	}
+	public NetworkViewID PreyID{
+		get { return _preyID; }
+		set { _preyID = value; } 
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -38,6 +42,7 @@ public class Missle : MonoBehaviour {
 		//network components
 		_myID = this.networkView.viewID;
 		_myView = NetworkView.Find(_myID);
+		_speed = 10.0f;
 	
 	}
 
@@ -55,9 +60,11 @@ public class Missle : MonoBehaviour {
 	void Update () {
 
 		transform.position += transform.forward * _speed;
+		Debug.Log("My ID  = " + _myID);
 		//make our missle older
 		_missleCurrentLife++;
 		//our missle has died of old age
+
 		if(_missleCurrentLife > _missleLifePeriod)
 		{
 			GameObject[] liveMissles = GameObject.FindGameObjectsWithTag("Missle");
@@ -72,9 +79,14 @@ public class Missle : MonoBehaviour {
 			}
 			
 		}
-
+		/*
 		//Hunting our target
-		HuntTarget();
+		if(_preyID != null)
+		{
+			HuntTarget();
+		}
+		*/
+
 	
 	}
 

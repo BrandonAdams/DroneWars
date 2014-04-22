@@ -12,11 +12,12 @@ public class PlayerManager : MonoBehaviour {
 	private NetworkViewID _myID;
 	private NetworkView _myView;
 	private int[] _spawnPointNumbers;
-	private int _bulletFiringTime, _firingTimer, _bulletCounter;
+	private int _bulletFiringTime, _bulletFiringTimer, _bulletCounter, _missleFiringTime, _missleFiringTimer, _missleCounter;
 
 
 	//public variables
 	public Bullet bullet;
+	public Missle missle;
 
 	//public accessor and getters
 	public bool IsTheHost{
@@ -42,8 +43,10 @@ public class PlayerManager : MonoBehaviour {
 		_myID = this.networkView.viewID;
 		_myView = NetworkView.Find(_myID);
 		_bullets = new ArrayList();
-		_firingTimer = _bulletCounter = 0;
+		_bulletFiringTimer = _missleFiringTimer = 1000;
+		_bulletCounter = _missleCounter = 0;
 		_bulletFiringTime = 5;
+		_missleFiringTime = 300;
 		whirringBladesObject1 = this.transform.FindChild("AudioMegaman1").gameObject;
 	}
 	
@@ -63,8 +66,8 @@ public class PlayerManager : MonoBehaviour {
 			if(_isFiringPrimary)
 			{
 
-				_firingTimer++;
-				if(_firingTimer > _bulletFiringTime)
+				_bulletFiringTimer++;
+				if(_bulletFiringTimer > _bulletFiringTime)
 				{
 					//create a bullet and place it just in front of the player
 					GameObject myPlayer = GameObject.Find(_myView.observed.name);
@@ -72,15 +75,16 @@ public class PlayerManager : MonoBehaviour {
 					bulletSpawnPosition += myPlayer.transform.forward * 8;
 					//bullet.initialize(4.0f, 3.0f, _myView.observed.name, _bulletCounter);
 					bullet.Speed = 4.0f;
-					Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 0);
+					Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 1);
 					_bullets.Add(bullet);
 					//reset the firing timer
-					_firingTimer = 0;
+					_bulletFiringTimer = 0;
 					_bulletCounter++;
 
 				}
 			}
-
+			//Increase the timer for the missle
+			_missleFiringTimer++;
 
 		}
 	}
@@ -101,7 +105,18 @@ public class PlayerManager : MonoBehaviour {
 
 		if(Input.GetKeyDown (KeyCode.Mouse1))
 		{
-			//Fire secondary weapon here 			
+			//Fire secondary weapon here 
+			if(_missleFiringTimer > _missleFiringTime)
+			{
+				//create a bullet and place it just in front of the player
+				GameObject myPlayer = GameObject.Find(_myView.observed.name);
+				Vector3 missleSpawnPosition = myPlayer.transform.position; 
+				missleSpawnPosition += myPlayer.transform.forward * 8;
+				Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 2);
+				//reset the firing timer
+				_missleFiringTimer = 0;
+				_missleCounter++;				
+			}
 		}
 
 	}
