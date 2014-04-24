@@ -37,6 +37,7 @@ public class aStationManager : MonoBehaviour {
 		gameStarted = false;
 		lobbyCameraPosition = myCamera.transform.position;
 		lobbyCameraRotation = myCamera.transform.rotation;
+
 	}
 	
 	// Update is called once per frame
@@ -91,7 +92,7 @@ public class aStationManager : MonoBehaviour {
 	//Display the HUD for the player
 	void onGUI()
 	{
-
+       
 	}
 
 	public void StartGame(string map)

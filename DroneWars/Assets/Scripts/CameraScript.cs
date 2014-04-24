@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class CameraScript : MonoBehaviour {
-	
+
 	public float speed = 0.0f;
 	public float strafeSpeed = 0.0f;
 	public float liftSpeed = 0.0f;
@@ -60,7 +60,7 @@ public class CameraScript : MonoBehaviour {
 		cummulativeRotationXAxis = 0.0f;
 		position = new Vector3(0,0,0);
 		//newForward = new Vector3(0,0,0);
-		
+       
 	}
 	
 	// Update is called once per frame
@@ -71,8 +71,9 @@ public class CameraScript : MonoBehaviour {
 		updateMovement();
 		
 	}
-	
-	void SteerWithMouse ()
+
+
+    void SteerWithMouse ()
 	{
 		//Get the left/right Input from the Mouse and use time along with a scaling factor 
 		// to add a controlled amount to our cummulative rotation about the y-Axis.
