@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerManager : MonoBehaviour {	
 
 	//private variables
-	private GameObject _gameCamera, whirringBladesObject1, whirringBladesObject2;	
+	private GameObject _gameCamera, whirringBladesObject1, whirringBladesObject2, shootingSoundObject;	
 	private  GameObject[] _players;
 	private ArrayList _bullets;
 	private bool _isGameOver, _isGameStarted, _isFiringPrimary, _isFiringSecondary = false;
@@ -47,7 +47,9 @@ public class PlayerManager : MonoBehaviour {
 		_bulletCounter = _missleCounter = 0;
 		_bulletFiringTime = 5;
 		_missleFiringTime = 300;
-		whirringBladesObject1 = this.transform.FindChild("AudioMegaman1").gameObject;
+		whirringBladesObject1 = this.transform.FindChild("AudioBlades1").gameObject;
+		whirringBladesObject2 = this.transform.FindChild("AudioBlades2").gameObject;
+		shootingSoundObject = this.transform.FindChild("AudioShootingGunSound").gameObject;
 	}
 	
 	// Update is called once per frame
@@ -76,6 +78,7 @@ public class PlayerManager : MonoBehaviour {
 					//bullet.initialize(4.0f, 3.0f, _myView.observed.name, _bulletCounter);
 					bullet.Speed = 4.0f;
 					Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 1);
+					shootingSoundObject.audio.Play();
 					_bullets.Add(bullet);
 					//reset the firing timer
 					_bulletFiringTimer = 0;
