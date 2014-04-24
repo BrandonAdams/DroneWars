@@ -47,7 +47,6 @@ public class Bullet : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		transform.position += transform.forward * _speed;
-		Debug.Log("speed is: " + _speed);
 		//make our bullet older
 		_bulletCurrentLife++;
 		//our bullet has died of old age

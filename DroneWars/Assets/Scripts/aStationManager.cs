@@ -3,11 +3,31 @@ using System.Collections;
 
 public class aStationManager : MonoBehaviour {
 
-
+	//private variables
 	private GameObject[] players;
 	private Vector3 droneCameraPosition, lobbyCameraPosition;
 	private Quaternion lobbyCameraRotation;
 	private bool gameStarted, gameActive, gameOver;
+	//variables related to damage/ warnings
+	private bool takingDamage = false;
+	private bool lockedOn = false;
+	private string altReady = "ALT\nRDY";
+
+	//Public variables
+	// source images
+	public Texture2D map;
+	public Texture2D cDown;
+	public Texture2D health;
+	public Texture2D hurtLeft;
+	public Texture2D hurtRight;
+	public Texture2D aim;
+	public Texture2D lockOn;
+	public int healthDisplay = 100;
+	public Camera myCamera;
+	public GameObject AbandonedStation;
+	public GameObject[] stationSpawnPointLocations;
+
+	//public accessor and getters
 	public bool GameStarted{
 		get { return gameStarted; }
 		set { gameStarted = value; }
@@ -21,9 +41,6 @@ public class aStationManager : MonoBehaviour {
 		set { gameOver = value; }
 	}
 
-	public Camera myCamera;
-	public GameObject AbandonedStation;
-	public GameObject[] stationSpawnPointLocations;
 
 	//create enums to access the different available game states
 	public enum GameModes { FreeForAll, Idle };
@@ -44,6 +61,7 @@ public class aStationManager : MonoBehaviour {
 	void Update () {
 		if(gameStarted)
 		{
+
 			gameStarted = false;
 			gameMap = GameMaps.AbandonedStation;  //THIS NEEDS TO CHANGE ********** NOT PERMANENT!!!!!!!!!!!!!!!!!!!!!!!!!
 			//have the host collect all the players playing
@@ -90,9 +108,40 @@ public class aStationManager : MonoBehaviour {
 	}
 
 	//Display the HUD for the player
-	void onGUI()
+	void OnGUI()
 	{
-       
+
+       	if(gameActive)
+		{
+
+			GUI.skin.label.fontSize = 24;
+			
+			// Place the Map on screen
+			GUI.Label (new Rect(Screen.width- map.width, 0, map.width, map.height), map); //400
+			
+			// Place the lower two dials (cooldown - left & health - right)
+			GUI.Label (new Rect (0,Screen.height - cDown.height, cDown.width,cDown.height), cDown);
+			GUI.Label (new Rect (Screen.width - health.width,Screen.height - health.height,health.width,health.height), health);
+			
+			//put alt text lable relative to cDown
+			GUI.Label(new Rect(cDown.width / 2 - cDown.width / 6, Screen.height - cDown.height / 2 - cDown.height / 6, cDown.width, cDown.height), altReady);
+			
+			//output health to player
+			GUI.Label(new Rect(Screen.width - cDown.width / 2 - cDown.width / 6, Screen.height - cDown.height / 2 - cDown.height / 7, cDown.width, cDown.height), "" + healthDisplay);
+			
+			if(takingDamage){
+				
+				// Place the hurt makers (can't be seen unless hit)
+				GUI.Label (new Rect (0,0 , hurtLeft.width, hurtLeft.height), hurtLeft);
+				GUI.Label (new Rect (Screen.width-hurtRight.width, 0, hurtRight.width, hurtRight.height), hurtRight);
+			}
+			// Place the 'locked-on' warning
+			if(lockedOn){
+				GUI.Label (new Rect (Screen.width/2 - lockOn.width, Screen.height - lockOn.height*2, lockOn.width , lockOn.height), lockOn);
+			}
+			//Place the crosshairs
+			GUI.Label (new Rect (Screen.width/ 2, Screen.height/ 2, aim.width, aim.height), aim);
+		}
 	}
 
 	public void StartGame(string map)

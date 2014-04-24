@@ -49,7 +49,7 @@ public class PlayerManager : MonoBehaviour {
 		_missleFiringTime = 300;
 		whirringBladesObject1 = this.transform.FindChild("AudioBlades1").gameObject;
 		whirringBladesObject2 = this.transform.FindChild("AudioBlades2").gameObject;
-		shootingSoundObject = this.transform.FindChild("AudioShootingGunSound").gameObject;
+		shootingSoundObject = this.transform.FindChild("AudioShootGunSound").gameObject;
 	}
 	
 	// Update is called once per frame
