@@ -59,6 +59,7 @@ public class Missle : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		//HuntTarget();
 		transform.position += transform.forward * _speed;
 		Debug.Log("My ID  = " + _myID);
 		//make our missle older
@@ -79,13 +80,13 @@ public class Missle : MonoBehaviour {
 			}
 			
 		}
-		/*
+
 		//Hunting our target
 		if(_preyID != null)
 		{
 			HuntTarget();
 		}
-		*/
+
 
 	
 	}

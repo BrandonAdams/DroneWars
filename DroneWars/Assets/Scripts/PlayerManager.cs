@@ -105,6 +105,20 @@ public class PlayerManager : MonoBehaviour {
 
 		if(Input.GetKeyDown (KeyCode.Mouse1))
 		{
+
+			Transform target = this.transform;
+			//Raycast -should be what we use or some other construct
+
+			//For now ill just search players and find the closest one
+			for( int i = 0; i < _players.Length; i++) {
+
+				if( i == 0 && _players[0] != null)
+				{
+					target = _players[i].transform;
+				}
+
+			}
+
 			//Fire secondary weapon here 
 			if(_missleFiringTimer > _missleFiringTime)
 			{
@@ -112,6 +126,7 @@ public class PlayerManager : MonoBehaviour {
 				GameObject myPlayer = GameObject.Find(_myView.observed.name);
 				Vector3 missleSpawnPosition = myPlayer.transform.position; 
 				missleSpawnPosition += myPlayer.transform.forward * 8;
+				missle.Initialize(10, 50, target.gameObject, _myView.observed.name, 2);
 				Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 2);
 				//reset the firing timer
 				_missleFiringTimer = 0;
