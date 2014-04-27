@@ -38,12 +38,15 @@ public class PlayerManager : MonoBehaviour {
 		set { _isGameStarted = value; }
 	}
 
+	void Awake() {
+		_players = new List<GameObject>();
+	}
+
 	// Use this for initialization
 	void Start () 
 	{
 		_myID = this.networkView.viewID;
 		_myView = NetworkView.Find(_myID);
-		_players = new List<GameObject>();
 		_bullets = new ArrayList();
 		_bulletFiringTimer = _missleFiringTimer = 1000;
 		_bulletCounter = _missleCounter = 0;
@@ -133,7 +136,8 @@ public class PlayerManager : MonoBehaviour {
 				missleSpawnPosition += myPlayer.transform.forward * 8;
 				//missle.Initialize(.001f, 50, target.gameObject, _myView.observed.name, 1);
 				Missle r = (Missle)Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 1);
-				r.Initialize(.001f, 50, target.gameObject.networkView.viewID, _myView.observed.name, 1);
+				Network.RPC("initiateMissile", RPCMode.AllBuffered, r.networkView.viewID, target.gameObject.networkView.viewID);
+				//r.Initialize(.001f, 50, target.gameObject.networkView.viewID, _myView.observed.name, 1);
 				Debug.Log("Missle R: " + r.PreyID);
 				//Debug.Log (missle.Speed);
 				//Debug.Log (missle.PreyID);
@@ -145,6 +149,13 @@ public class PlayerManager : MonoBehaviour {
 
 	}
 
+	[RPC]
+	void initiateMissle(NetworkViewID missile, NetworkViewID target) {
+
+		Missle m = (Missle)NetworkView.Find(missile).observed.gameObject;
+		m.Initialize(.001f, 50, target.gameObject.networkView.viewID, _myView.observed.name, 1);
+
+	}
 
 
 	void checkKeyUp()

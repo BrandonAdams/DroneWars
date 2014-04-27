@@ -40,7 +40,7 @@ public class Missle : MonoBehaviour {
 		//missles current life
 		_missleCurrentLife = 0;
 		//network components
-		_myID = this.networkView.viewID;
+		//_myID = this.networkView.viewID;
 		//_myView = NetworkView.Find(_myID);
 		_speed = 1.0f;
 	
@@ -66,9 +66,8 @@ public class Missle : MonoBehaviour {
 		//Debug.Log("Before: " + transform.forward);
 
 		//Hunting our target
-		Debug.Log ("TESSSSSSSSSSSSSSSSSSST:  " + _preyID);
-		networkView.RPC("HuntTarget", RPCMode.AllBuffered, _preyID);
-
+		//networkView.RPC("HuntTarget", RPCMode.AllBuffered, _preyID);
+		HuntTarget();
 		//Debug.Log("After: " + transform.forward);
 
 		//transform.forward.Normalize();
@@ -96,11 +95,11 @@ public class Missle : MonoBehaviour {
 	
 	}
 
-	[RPC]
-	void HuntTarget(NetworkViewID prey)
+
+	void HuntTarget()
 	{
 		//Debug.Log("Hunt PreyID: " + _preyID);
-		NetworkView targetView = NetworkView.Find(prey);
+		NetworkView targetView = NetworkView.Find(_preyID);
 		//make sure our target is still in the game before steering toward it
 		if(targetView)
 		{
