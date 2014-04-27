@@ -66,8 +66,8 @@ public class Missle : MonoBehaviour {
 		//Debug.Log("Before: " + transform.forward);
 
 		//Hunting our target
-
-		networkView.RPC("HuntTarget", RPCMode.AllBuffered);
+		Debug.Log ("TESSSSSSSSSSSSSSSSSSST:  " + _preyID);
+		networkView.RPC("HuntTarget", RPCMode.AllBuffered, _preyID);
 
 		//Debug.Log("After: " + transform.forward);
 
@@ -96,16 +96,11 @@ public class Missle : MonoBehaviour {
 	
 	}
 
-	[RPC] 
-	void updatePosition() {
-
-	}
-
 	[RPC]
-	void HuntTarget()
+	void HuntTarget(NetworkViewID prey)
 	{
 		//Debug.Log("Hunt PreyID: " + _preyID);
-		NetworkView targetView = NetworkView.Find(_preyID);
+		NetworkView targetView = NetworkView.Find(prey);
 		//make sure our target is still in the game before steering toward it
 		if(targetView)
 		{

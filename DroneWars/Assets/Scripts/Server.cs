@@ -335,7 +335,7 @@ public class Server : MonoBehaviour {
 	void connectToServer(string theIPAddress, int theConnectionPort)
 	{
 		Network.Connect(theIPAddress, theConnectionPort);
-		Debug.Log(playerName + " just connected");
+		//Debug.Log(playerName + " just connected");
 	}
 	
 
@@ -349,7 +349,7 @@ public class Server : MonoBehaviour {
 	// we are informed that a player has just connected to us (the server)
 	void OnPlayerConnected (NetworkPlayer player)
 	{
-		Debug.Log ("Player " + player + " connected from " + player.ipAddress + ":" + player.port);
+		//Debug.Log ("Player " + player + " connected from " + player.ipAddress + ":" + player.port);
 	}
 
 	/**
@@ -401,7 +401,7 @@ public class Server : MonoBehaviour {
 		newPlayer.GetComponent<PlayerLabel>().PlayerName = playerName;
 		//get the network view id of the new player
 		ID = newPlayer.networkView.viewID;		
-		Debug.Log(ID + " : This code is located in the createMyPlayer method in the Server class.");
+		//Debug.Log(ID + " : This code is located in the createMyPlayer method in the Server class.");
 
 		//send out an RPC to everyone that we have a new player using the network view ID we just obtained
 		networkView.RPC ("addPlayer", RPCMode.AllBuffered, playerName, ID);
@@ -420,7 +420,7 @@ public class Server : MonoBehaviour {
 	void addPlayer (string theName, NetworkViewID theID)
 	{			
 
-		GameObject player = GameObject.Find(playerName);
+
 
 		//get the NetworkView component of the new gameobject using the ID sent over the RPC
 		NetworkView view = NetworkView.Find(theID);
@@ -434,7 +434,8 @@ public class Server : MonoBehaviour {
 			//change the playerName of the object using the gameObject to reference that variable
 			newPlayer.GetComponent<PlayerLabel>().PlayerName = theName;	
 
-			player.GetComponent<PlayerManager>().Players.Add(newPlayer);
+			//GameObject player = GameObject.Find(theName);
+		    GameObject.Find(playerName).GetComponent<PlayerManager>().Players.Add(newPlayer);
 			//Debug.Log(player.GetComponent<PlayerManager>().Players.Count);
 
 		}		
