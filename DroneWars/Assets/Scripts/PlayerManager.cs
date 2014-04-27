@@ -134,13 +134,9 @@ public class PlayerManager : MonoBehaviour {
 				GameObject myPlayer = GameObject.Find(_myView.observed.name);
 				Vector3 missleSpawnPosition = myPlayer.transform.position; 
 				missleSpawnPosition += myPlayer.transform.forward * 8;
-				//missle.Initialize(.001f, 50, target.gameObject, _myView.observed.name, 1);
 				Missle r = (Missle)Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 1);
-				Network.RPC("initiateMissile", RPCMode.AllBuffered, r.networkView.viewID, target.gameObject.networkView.viewID);
+				networkView.RPC("initiateMissile", RPCMode.AllBuffered, r.networkView.viewID, target.gameObject.networkView.viewID);
 				//r.Initialize(.001f, 50, target.gameObject.networkView.viewID, _myView.observed.name, 1);
-				Debug.Log("Missle R: " + r.PreyID);
-				//Debug.Log (missle.Speed);
-				//Debug.Log (missle.PreyID);
 				//reset the firing timer
 				_missleFiringTimer = 0;
 				_missleCounter++;				
@@ -150,10 +146,10 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	[RPC]
-	void initiateMissle(NetworkViewID missile, NetworkViewID target) {
+	void initiateMissile(NetworkViewID missile, NetworkViewID target) {
 
-		Missle m = (Missle)NetworkView.Find(missile).observed.gameObject;
-		m.Initialize(.001f, 50, target.gameObject.networkView.viewID, _myView.observed.name, 1);
+		GameObject m = NetworkView.Find(missile).observed.gameObject;
+		m.GetComponent<Missle>().Initialize(.001f, 50, target, _myView.observed.name, 1);
 
 	}
 

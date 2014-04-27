@@ -9,6 +9,7 @@ public class Missle : MonoBehaviour {
 	private int _missleTag, _missleLifePeriod, _missleCurrentLife, _missleGuidanceActive;
 	private string _missleName;
 	private NetworkViewID _myID, _preyID;
+	private bool _fired;
 	//private NetworkView _myView;
 
 	//public accessors and getters
@@ -39,6 +40,7 @@ public class Missle : MonoBehaviour {
 		//_missleGuidanceActive = 10;
 		//missles current life
 		_missleCurrentLife = 0;
+		_fired = false;
 		//network components
 		//_myID = this.networkView.viewID;
 		//_myView = NetworkView.Find(_myID);
@@ -54,8 +56,10 @@ public class Missle : MonoBehaviour {
 		_missleName = playerName + "Missle" + tagID;
 		_missleTag = tagID;
 		Debug.Log (target);
+		Debug.Log (playerName);
 		_preyID = target;
-		Debug.Log (_preyID);
+		_fired = true;
+		//Debug.Log (_preyID);
 	}
 	
 	// Update is called once per frame
@@ -66,8 +70,10 @@ public class Missle : MonoBehaviour {
 		//Debug.Log("Before: " + transform.forward);
 
 		//Hunting our target
-		//networkView.RPC("HuntTarget", RPCMode.AllBuffered, _preyID);
-		HuntTarget();
+		//Does Not begin searching until fired, which is noted in the initialize function
+		if(_preyID != NetworkViewID.unassigned) {
+			HuntTarget();
+		}
 		//Debug.Log("After: " + transform.forward);
 
 		//transform.forward.Normalize();
