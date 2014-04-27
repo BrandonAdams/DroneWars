@@ -26,15 +26,15 @@ public class Missle : MonoBehaviour {
 	public string MissleName{
 		get { return _missleName; }
 	}
-	/*public NetworkViewID PreyID{
+	public NetworkViewID PreyID{
 		get { return _preyID; }
 		set { _preyID = value; } 
 	}
-*/
+
 	// Use this for initialization
 	void Start () {
 		//total life span of a missle
-		_missleLifePeriod = 500000;
+		_missleLifePeriod = 500;
 		//time it takes for the missle to start guiding itself toward its target
 		//_missleGuidanceActive = 10;
 		//missles current life
@@ -46,15 +46,15 @@ public class Missle : MonoBehaviour {
 	
 	}
 
-	public void Initialize(float missleSpeed, float misslePower, GameObject target, string playerName, int tagID)
+	public void Initialize(float missleSpeed, float misslePower, NetworkViewID target, string playerName, int tagID)
 	{
 		//instantiating our variables
 		_speed = missleSpeed;
 		_power = misslePower;
 		_missleName = playerName + "Missle" + tagID;
 		_missleTag = tagID;
-		Debug.Log (target.GetComponent<NetworkView>().networkView.viewID);
-		_preyID = target.GetComponent<NetworkView>().networkView.viewID;
+		Debug.Log (target);
+		_preyID = target;
 		Debug.Log (_preyID);
 	}
 	
@@ -62,11 +62,12 @@ public class Missle : MonoBehaviour {
 	void Update () {
 
 		//Debug.Log("PreyID: " + _preyID);
+		//Debug.Log ("Speed: " + _speed);
 		//Debug.Log("Before: " + transform.forward);
 
 		//Hunting our target
 
-		HuntTarget();
+		networkView.RPC("HuntTarget", RPCMode.AllBuffered);
 
 		//Debug.Log("After: " + transform.forward);
 
@@ -100,9 +101,10 @@ public class Missle : MonoBehaviour {
 
 	}
 
+	[RPC]
 	void HuntTarget()
 	{
-		Debug.Log("Hunt PreyID: " + _preyID);
+		//Debug.Log("Hunt PreyID: " + _preyID);
 		NetworkView targetView = NetworkView.Find(_preyID);
 		//make sure our target is still in the game before steering toward it
 		if(targetView)

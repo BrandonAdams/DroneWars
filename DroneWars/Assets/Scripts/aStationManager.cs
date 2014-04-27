@@ -212,7 +212,7 @@ public class aStationManager : MonoBehaviour {
 			for(int i = 0; i < players.Length; i++)
 			{
 				GameObject currentPlayer = players[i];
-				Debug.Log("moved player " + currentPlayer.name);
+				//Debug.Log("moved player " + currentPlayer.name);
 				
 				int randomPoint = Random.Range(0, count);
 				playerPosition = stationSpawnPointLocations[randomPoint].transform.position;

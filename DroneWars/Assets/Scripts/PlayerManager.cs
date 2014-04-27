@@ -131,8 +131,12 @@ public class PlayerManager : MonoBehaviour {
 				GameObject myPlayer = GameObject.Find(_myView.observed.name);
 				Vector3 missleSpawnPosition = myPlayer.transform.position; 
 				missleSpawnPosition += myPlayer.transform.forward * 8;
-				missle.Initialize(.00000001f, 50, target.gameObject, _myView.observed.name, 1);
-				Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 2);
+				//missle.Initialize(.001f, 50, target.gameObject, _myView.observed.name, 1);
+				Missle r = (Missle)Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 1);
+				r.Initialize(.001f, 50, target.gameObject.networkView.viewID, _myView.observed.name, 1);
+				Debug.Log("Missle R: " + r.PreyID);
+				//Debug.Log (missle.Speed);
+				//Debug.Log (missle.PreyID);
 				//reset the firing timer
 				_missleFiringTimer = 0;
 				_missleCounter++;				
@@ -140,6 +144,8 @@ public class PlayerManager : MonoBehaviour {
 		}
 
 	}
+
+
 
 	void checkKeyUp()
 	{

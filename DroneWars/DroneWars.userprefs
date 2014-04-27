@@ -2,10 +2,8 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Missle.cs">
     <Files>
-      <File FileName="Assets\Scripts\PlayerManager.cs" Line="133" Column="59" />
-      <File FileName="Assets\Scripts\Missle.cs" Line="78" Column="35" />
-      <File FileName="Assets\Scripts\Server.cs" Line="436" Column="4" />
-      <File FileName="Assets\Scripts\Bullet.cs" Line="43" Column="46" />
+      <File FileName="Assets\Scripts\Missle.cs" Line="50" Column="3" />
+      <File FileName="Assets\Scripts\PlayerManager.cs" Line="143" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
