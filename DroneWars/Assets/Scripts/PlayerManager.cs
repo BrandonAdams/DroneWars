@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour {	
 
 	//private variables
 	private GameObject _gameCamera, whirringBladesObject1, whirringBladesObject2, shootingSoundObject;	
-	private  GameObject[] _players;
+	private List<GameObject> _players;
 	private ArrayList _bullets;
-	private bool _isGameOver, _isGameStarted, _isFiringPrimary, _isFiringSecondary = false;
+	private bool /*_isGameOver, */_isGameStarted, _isFiringPrimary/*, _isFiringSecondary*/ = false;
 	private bool _isTheHost;
 	private NetworkViewID _myID;
 	private NetworkView _myView;
@@ -28,7 +29,7 @@ public class PlayerManager : MonoBehaviour {
 		get { return _spawnPointNumbers; }
 		set { _spawnPointNumbers = value; }
 	}
-	public GameObject[] Players {
+	public List<GameObject> Players {
 		get{return _players;}
 	}
 	public bool IsGameStarted
@@ -42,6 +43,7 @@ public class PlayerManager : MonoBehaviour {
 	{
 		_myID = this.networkView.viewID;
 		_myView = NetworkView.Find(_myID);
+		_players = new List<GameObject>();
 		_bullets = new ArrayList();
 		_bulletFiringTimer = _missleFiringTimer = 1000;
 		_bulletCounter = _missleCounter = 0;
@@ -50,16 +52,17 @@ public class PlayerManager : MonoBehaviour {
 		whirringBladesObject1 = this.transform.FindChild("AudioBlades1").gameObject;
 		whirringBladesObject2 = this.transform.FindChild("AudioBlades2").gameObject;
 		shootingSoundObject = this.transform.FindChild("AudioShootGunSound").gameObject;
+
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{        
-		if(_isGameOver)
+		/*if(_isGameOver)
 		{
 			
-		}
-		else if(_isGameStarted)
+		}*/
+		if(_isGameStarted)
 		{ 		
 			//players = GameObject.FindGameObjectsWithTag("Drone");
 			checkKeyDown();
@@ -103,6 +106,7 @@ public class PlayerManager : MonoBehaviour {
 		{
 			_isFiringPrimary = true;
 			whirringBladesObject1.audio.mute = true;
+			whirringBladesObject2.audio.mute = true;
 
 		}
 
@@ -112,15 +116,13 @@ public class PlayerManager : MonoBehaviour {
 			Transform target = this.transform;
 			//Raycast -should be what we use or some other construct
 
-			//For now ill just search players and find the closest one
-			for( int i = 0; i < _players.Length; i++) {
-
-				if( i == 0 && _players[0] != null)
+			//For now ill just take the first player that connects to you
+				if(_players[0] != null)
 				{
-					target = _players[i].transform;
+					target = _players[0].transform;
 				}
 
-			}
+			
 
 			//Fire secondary weapon here 
 			if(_missleFiringTimer > _missleFiringTime)
@@ -129,7 +131,7 @@ public class PlayerManager : MonoBehaviour {
 				GameObject myPlayer = GameObject.Find(_myView.observed.name);
 				Vector3 missleSpawnPosition = myPlayer.transform.position; 
 				missleSpawnPosition += myPlayer.transform.forward * 8;
-				missle.Initialize(10, 50, target.gameObject, _myView.observed.name, 2);
+				missle.Initialize(.00000001f, 50, target.gameObject, _myView.observed.name, 1);
 				Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 2);
 				//reset the firing timer
 				_missleFiringTimer = 0;
@@ -163,7 +165,7 @@ public class PlayerManager : MonoBehaviour {
 		//go through the list of players and check to see which player is me
 		for(int i=0; i < playerList.Length; i++)
 		{
-			GameObject thePlayer = playerList[i];
+			//GameObject thePlayer = playerList[i];
 			NetworkViewID theID = playerList[i].networkView.viewID;
 			NetworkView theView = NetworkView.Find(theID);
 

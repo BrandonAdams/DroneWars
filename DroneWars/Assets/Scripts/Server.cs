@@ -23,10 +23,10 @@ public class Server : MonoBehaviour {
 	public GameObject gameCamera;
 	
 	public bool isPlaying = false;
-	private float currentTimer  = 0;
-	private float gameTimer = 60; // total amount of game time 	
+	//private float currentTimer  = 0;
+	//private float gameTimer = 60; // total amount of game time 	
 	private string playerName = "";
-	private string endingMessage = "";
+	//private string endingMessage = "";
 	
 	/*********    Lobby Window Variables**********/
 	public Font gameFont; //adding our fonts
@@ -35,7 +35,7 @@ public class Server : MonoBehaviour {
 	public bool IsHost{
 		get { return isHost; }
 	}
-	private int _selectedDrone = 1, _totalNumberOfPlayers = 0; 
+	private int _selectedDrone = 1/*, _totalNumberOfPlayers = 0*/; 
 	private float screenHalfWidth, lobbyXPosition, lobbyYPosition, lobbyWindowWidth, lobbyWindowHeight;
 	private float selectingButtonHeight = 60.0f;
 	private float updatingButtonHeight = 40.0f;
@@ -207,7 +207,7 @@ public class Server : MonoBehaviour {
 				if(GUI.Button (new Rect(30, (lobbyWindowHeight - updatingButtonHeight) - 50, 200.0f, 47), "Deploy"))
 				{
 					//launch the game here
-					GameObject gameManager = GameObject.Find("GameManager_GO");
+					//GameObject gameManager = GameObject.Find("GameManager_GO");
 					currentState = ServerState.Initialized;
 					//gameManager.GetComponent<aStationManager>().GameStarted = true; 
 					networkView.RPC("startUpGame", RPCMode.All);  //start the game
@@ -419,9 +419,12 @@ public class Server : MonoBehaviour {
 	[RPC]
 	void addPlayer (string theName, NetworkViewID theID)
 	{			
+
+		GameObject player = GameObject.Find(playerName);
+
 		//get the NetworkView component of the new gameobject using the ID sent over the RPC
 		NetworkView view = NetworkView.Find(theID);
-		
+
 		if(!view.isMine)
 		{			
 			//using the NetworkView of that object, get the gameobject in question and save it to a variable
@@ -429,7 +432,11 @@ public class Server : MonoBehaviour {
 			//set the name of the new player in the heiarchy to that players name
 			newPlayer.name = theName;
 			//change the playerName of the object using the gameObject to reference that variable
-			newPlayer.GetComponent<PlayerLabel>().PlayerName = theName;			
+			newPlayer.GetComponent<PlayerLabel>().PlayerName = theName;	
+
+			player.GetComponent<PlayerManager>().Players.Add(newPlayer);
+			//Debug.Log(player.GetComponent<PlayerManager>().Players.Count);
+
 		}		
 	}
 

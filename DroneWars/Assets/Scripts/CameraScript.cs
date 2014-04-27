@@ -16,18 +16,18 @@ public class CameraScript : MonoBehaviour {
 	
 	
 	private float timer = 0;
-	private float rotateCounterA = 0;
-	private float rotateCounterD = 0;
-	private float rotateCounter = 0;
+	//private float rotateCounterA = 0;
+	//private float rotateCounterD = 0;
+	//private float rotateCounter = 0;
 	
 	
 	public GameObject cam;
 	
-	private float moveUp = 0.0f;
+	//private float moveUp = 0.0f;
 	
 	private bool isGravOn = false;
 	private bool canFly = true;
-	private bool isRotate = false;
+	//private bool isRotate = false;
 	
 	// The initial orientation.
 	private Quaternion initialOrientation;
@@ -41,24 +41,27 @@ public class CameraScript : MonoBehaviour {
 	private float maxUpRollRotation = -300;
 	private float maxDownRollRotation = -430;
 	
-	private Vector3 position;
+	//private Vector3 position;
 	
 	//private Vector3 newForward;
 	
-	private float vx = 0.0f;
-	private float vy = 0.0f;
-	private float vz = 0.0f;
+	//private float vx = 0.0f;
+	//private float vy = 0.0f;
+	//private float vz = 0.0f;
 
 	// Use this for initialization
 	void Start () 
 	{
 		//save the quaternion representing our initial orientation from the transform
 		initialOrientation = transform.rotation;
-		
+
+		Screen.lockCursor = true;
+		Screen.showCursor = false;
+
 		//set the cummulativeRotation to zero.
 		cummulativeRotationYAxis = 0.0f;
 		cummulativeRotationXAxis = 0.0f;
-		position = new Vector3(0,0,0);
+		//position = new Vector3(0,0,0);
 		//newForward = new Vector3(0,0,0);
        
 	}
@@ -106,6 +109,7 @@ public class CameraScript : MonoBehaviour {
 	
 	void updateMovement()
 	{
+
 		if(canFly == true)
 		{
 			#region arrows

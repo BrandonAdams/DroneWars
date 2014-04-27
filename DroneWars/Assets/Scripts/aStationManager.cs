@@ -52,8 +52,8 @@ public class aStationManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {		 
 		gameStarted = false;
-		lobbyCameraPosition = myCamera.transform.position;
-		lobbyCameraRotation = myCamera.transform.rotation;
+		//lobbyCameraPosition = myCamera.transform.position;
+		//lobbyCameraRotation = myCamera.transform.rotation;
 
 	}
 	
@@ -223,7 +223,7 @@ public class aStationManager : MonoBehaviour {
 				}
 				else{
 					currentPlayer.transform.position = playerPosition;
-					GameObject cam = GameObject.Find("Main Camera");
+					//GameObject cam = GameObject.Find("Main Camera");
 				}					
 			}			
 			break;

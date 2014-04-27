@@ -8,8 +8,8 @@ public class Bullet : MonoBehaviour {
 	private float _power;
 	private int _bulletTag, _bulletLifePeriod, _bulletCurrentLife;
 	private string _bulletName;
-	private NetworkViewID _myID;
-	private NetworkView _myView;
+	//private NetworkViewID _myID;
+	//private NetworkView _myView;
 
 	//public accessors and getters
 	public float Speed{
@@ -32,8 +32,8 @@ public class Bullet : MonoBehaviour {
 		_bulletLifePeriod = 200;
 		_bulletCurrentLife = 0;
 		_speed = 4.0f;
-		_myID = this.networkView.viewID;
-		_myView = NetworkView.Find(_myID);
+		//_myID = this.networkView.viewID;
+		//_myView = NetworkView.Find(_myID);
 	}
 
 	public void initialize(float bulletSpeed, float bulletPower, string playerName, int tagID)
@@ -57,7 +57,7 @@ public class Bullet : MonoBehaviour {
 			{
 				if(liveBullets[i].networkView.isMine)
 				{
-					Debug.Log("Destroyed bullet");
+					//Debug.Log("Destroyed bullet");
 					Network.Destroy(liveBullets[i]);
 					break;
 				}

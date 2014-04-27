@@ -9,7 +9,7 @@ public class Missle : MonoBehaviour {
 	private int _missleTag, _missleLifePeriod, _missleCurrentLife, _missleGuidanceActive;
 	private string _missleName;
 	private NetworkViewID _myID, _preyID;
-	private NetworkView _myView;
+	//private NetworkView _myView;
 
 	//public accessors and getters
 	public float Speed{
@@ -26,23 +26,23 @@ public class Missle : MonoBehaviour {
 	public string MissleName{
 		get { return _missleName; }
 	}
-	public NetworkViewID PreyID{
+	/*public NetworkViewID PreyID{
 		get { return _preyID; }
 		set { _preyID = value; } 
 	}
-
+*/
 	// Use this for initialization
 	void Start () {
 		//total life span of a missle
-		_missleLifePeriod = 500;
+		_missleLifePeriod = 500000;
 		//time it takes for the missle to start guiding itself toward its target
-		_missleGuidanceActive = 10;
+		//_missleGuidanceActive = 10;
 		//missles current life
 		_missleCurrentLife = 0;
 		//network components
 		_myID = this.networkView.viewID;
-		_myView = NetworkView.Find(_myID);
-		_speed = 10.0f;
+		//_myView = NetworkView.Find(_myID);
+		_speed = 1.0f;
 	
 	}
 
@@ -53,15 +53,26 @@ public class Missle : MonoBehaviour {
 		_power = misslePower;
 		_missleName = playerName + "Missle" + tagID;
 		_missleTag = tagID;
+		Debug.Log (target.GetComponent<NetworkView>().networkView.viewID);
 		_preyID = target.GetComponent<NetworkView>().networkView.viewID;
+		Debug.Log (_preyID);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		//HuntTarget();
+		//Debug.Log("PreyID: " + _preyID);
+		//Debug.Log("Before: " + transform.forward);
+
+		//Hunting our target
+
+		HuntTarget();
+
+		//Debug.Log("After: " + transform.forward);
+
+		//transform.forward.Normalize();
 		transform.position += transform.forward * _speed;
-		Debug.Log("My ID  = " + _myID);
+		//Debug.Log("My ID  = " + _myID);
 		//make our missle older
 		_missleCurrentLife++;
 		//our missle has died of old age
@@ -81,18 +92,17 @@ public class Missle : MonoBehaviour {
 			
 		}
 
-		//Hunting our target
-		if(_preyID != null)
-		{
-			HuntTarget();
-		}
-
-
 	
+	}
+
+	[RPC] 
+	void updatePosition() {
+
 	}
 
 	void HuntTarget()
 	{
+		Debug.Log("Hunt PreyID: " + _preyID);
 		NetworkView targetView = NetworkView.Find(_preyID);
 		//make sure our target is still in the game before steering toward it
 		if(targetView)
@@ -100,7 +110,8 @@ public class Missle : MonoBehaviour {
 			GameObject target = targetView.observed.gameObject;
 			//get our new vector heading via our targets position and mine
 			Vector3 newHeading = target.transform.position - transform.position;
-			transform.forward = newHeading.normalized;
+			transform.forward = newHeading - transform.forward * _speed;
+			//transform.forward = newHeading.normalized;
 		}
 	}
 }
