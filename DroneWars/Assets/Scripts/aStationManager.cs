@@ -84,7 +84,7 @@ public class aStationManager : MonoBehaviour {
 				if(view.isMine)
 				{
 					droneCameraPosition = players[i].transform.position;
-					droneCameraPosition.z += 5;
+					//droneCameraPosition.z += 0;
 					myCamera.transform.position = droneCameraPosition;
 					Quaternion playerRotation = players[i].transform.rotation;
 					myCamera.transform.rotation = playerRotation;
@@ -140,7 +140,7 @@ public class aStationManager : MonoBehaviour {
 				GUI.Label (new Rect (Screen.width/2 - lockOn.width, Screen.height - lockOn.height*2, lockOn.width , lockOn.height), lockOn);
 			}
 			//Place the crosshairs
-			GUI.Label (new Rect (Screen.width/ 2, Screen.height/ 2, aim.width, aim.height), aim);
+			GUI.Label (new Rect (Screen.width/ 2 - aim.width/2, Screen.height/ 2 - aim.height/2, aim.width, aim.height), aim);
 		}
 	}
 

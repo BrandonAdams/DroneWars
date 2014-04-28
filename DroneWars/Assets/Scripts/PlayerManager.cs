@@ -120,7 +120,7 @@ public class PlayerManager : MonoBehaviour {
 			//Raycast -should be what we use or some other construct
 
 			//For now ill just take the first player that connects to you
-				if(_players[0] != null)
+				if(_players.Count > 0)
 				{
 					target = _players[0].transform;
 				}
