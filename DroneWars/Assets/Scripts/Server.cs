@@ -12,7 +12,7 @@ public class Server : MonoBehaviour {
 	public GameModes gameMode = GameModes.Lobby;
 	public ServerState currentState = ServerState.notInitialized; 
 	//network information
-	private string connectionIP = "127.0.0.1";
+	private string connectionIP = "129.21.28.5";
 	public int connectPort = 25002;
 
 	private NetworkViewID ID;

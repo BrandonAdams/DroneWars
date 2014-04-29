@@ -56,9 +56,13 @@ public class Player : MonoBehaviour {
 		nameDisplay.GetComponent<TextMesh>().text = playerName;
 		nameDisplay.transform.position = new Vector3(transform.position.x, transform.position.y - 40, transform.position.z);
 
-		SteerWithMouse();
-		
-		updateMovement();
+		if(this.GetComponent<NetworkView>().viewID.isMine)
+		{
+			SteerWithMouse();
+			
+			updateMovement();
+		}
+
 	}
 
 	void SteerWithMouse ()
