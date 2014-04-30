@@ -183,7 +183,7 @@ public class Player : MonoBehaviour {
 			#region A
 			if((Input.GetKey (KeyCode.A)) && !(Input.GetKey (KeyCode.D)))
 			{
-				if(speed > -maxSpeed)
+				if(strafeSpeed > -maxSpeed)
 				{
 					strafeSpeed -= speedMod;
 					
