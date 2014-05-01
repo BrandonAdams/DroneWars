@@ -143,7 +143,7 @@ public class Server : MonoBehaviour {
 		else if(inClient)
 		{
 			//Entering the IP address
-			GUI.Label(new Rect(70, 50, 240.0f, 30.0f), "Enter Host IP: ");
+			GUI.Label(new Rect(70, 50, 350.0f, 30.0f), "Enter Host IP: ");
 			connectionIP = GUI.TextField(new Rect(280, 50, 130.0f, 30.0f), connectionIP);
 			//Entering the Port number
 			GUI.Label(new Rect(70, 90, 200.0f, 30.0f), "Port Number: ");

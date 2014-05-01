@@ -181,7 +181,7 @@ public class PlayerManager : MonoBehaviour {
 			//GameObject thePlayer = playerList[i];
 			NetworkViewID theID = playerList[i].networkView.viewID;
 			NetworkView theView = NetworkView.Find(theID);
-			w
+
 			
             //If the network view is mine then check myself against all other player in vicinity
 			if(theView.isMine)
