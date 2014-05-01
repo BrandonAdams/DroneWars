@@ -14,6 +14,7 @@ public class PlayerManager : MonoBehaviour {
 	private NetworkView _myView;
 	private int[] _spawnPointNumbers;
 	private int _bulletFiringTime, _bulletFiringTimer, _bulletCounter, _missleFiringTime, _missleFiringTimer, _missleCounter;
+	private RaycastHit hit;
 
 
 	//public variables
@@ -79,16 +80,26 @@ public class PlayerManager : MonoBehaviour {
 				{
 					//create a bullet and place it just in front of the player
 					GameObject myPlayer = GameObject.Find(_myView.observed.name);
-					Vector3 bulletSpawnPosition = myPlayer.transform.position; 
-					bulletSpawnPosition += myPlayer.transform.forward * 8;
+					//Vector3 bulletSpawnPosition = myPlayer.transform.position; 
+					//bulletSpawnPosition += myPlayer.transform.forward * 8;
 					//bullet.initialize(4.0f, 3.0f, _myView.observed.name, _bulletCounter);
-					bullet.Speed = 4.0f;
-					Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 1);
+					//bullet.Speed = 4.0f;
+					//Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 1);
+
+					Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 1000.0f);
+					Debug.DrawRay(myPlayer.transform.position, transform.TransformDirection(myPlayer.transform.forward) * 1000.0f, Color.white);
+					Debug.Log (hit.collider.gameObject);
+
+					if(hit.collider.gameObject.tag == "Drone") {
+
+						Debug.Log ("Hit Enemy Drone");
+					}
+
 					shootingSoundObject.audio.Play();
-					_bullets.Add(bullet);
+					//_bullets.Add(bullet);
 					//reset the firing timer
-					_bulletFiringTimer = 0;
-					_bulletCounter++;
+					//_bulletFiringTimer = 0;
+					//_bulletCounter++;
 
 				}
 			}
@@ -181,7 +192,10 @@ public class PlayerManager : MonoBehaviour {
 			//GameObject thePlayer = playerList[i];
 			NetworkViewID theID = playerList[i].networkView.viewID;
 			NetworkView theView = NetworkView.Find(theID);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2d43639bc7f012be8d8ad29b32813a8c96281255
 			
             //If the network view is mine then check myself against all other player in vicinity
 			if(theView.isMine)
