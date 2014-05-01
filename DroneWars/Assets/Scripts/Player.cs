@@ -106,7 +106,7 @@ public class Player : MonoBehaviour {
 				//players = GameObject.FindGameObjectsWithTag("Drone");
 				checkKeyDown();
 				checkKeyUp();
-				
+
 				if(_isFiringPrimary)
 				{
 					
@@ -114,13 +114,14 @@ public class Player : MonoBehaviour {
 					if(_bulletFiringTimer > _bulletFiringTime)
 					{
 						//create a bullet and place it just in front of the player
-						GameObject myPlayer = GameObject.Find(_myView.observed.name);
+						//myPlayer = GameObject.Find(_myView.observed.name);
 						//Vector3 bulletSpawnPosition = myPlayer.transform.position; 
 						//bulletSpawnPosition += myPlayer.transform.forward * 8;
 						//bullet.initialize(4.0f, 3.0f, _myView.observed.name, _bulletCounter);
 						//bullet.Speed = 4.0f;
 						//Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 1);
-						
+
+						GameObject myPlayer = GameObject.Find(_myView.observed.name);
 						Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 1000.0f);
 						Debug.DrawRay(myPlayer.transform.position, transform.TransformDirection(myPlayer.transform.forward) * 1000.0f, Color.white);
 						Debug.Log (hit.collider.gameObject);

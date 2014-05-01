@@ -132,7 +132,6 @@ public class Server : MonoBehaviour {
 			{
 				isHost = true;
 				startServer(connectPort);
-				inJoinGame = true;
 				inHost = false;
 			}
 			if(GUI.Button (new Rect(lobbyWindowWidth - 370.0f, (lobbyWindowHeight - updatingButtonHeight) - 20, 350.0f, updatingButtonHeight), "Return to Main Lobby"))
@@ -180,7 +179,6 @@ public class Server : MonoBehaviour {
 			if(GUI.Button(new Rect(100, 250, 250.0f, selectingButtonHeight), "Join Game"))
 			{
 				//JOIN THE SELECTED SERVER HERE
-				inJoinGame = true;
 				isHost = false;
 				inClient = false;
 				connectToServer(connectionIP, connectPort);
@@ -408,6 +406,8 @@ public class Server : MonoBehaviour {
 		//send out an RPC to everyone that we have a new player using the network view ID we just obtained
 		networkView.RPC ("addPlayer", RPCMode.AllBuffered, playerName, ID);
 		networkView.RPC ("SendToServer", RPCMode.All, playerName + " just connected");
+		inJoinGame = true;
+		
 	}
 
 	#endregion
