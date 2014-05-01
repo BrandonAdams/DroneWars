@@ -72,7 +72,7 @@ public class aStationManager : MonoBehaviour {
 				NetworkView view = players[i].networkView;
 				GameObject thePlayer = view.observed.gameObject;
 				
-				if(thePlayer.GetComponent<PlayerManager>().IsTheHost)
+				if(thePlayer.GetComponent<Player>().IsTheHost)
 				{
 					spawnPlayers ();
 				}
@@ -90,7 +90,7 @@ public class aStationManager : MonoBehaviour {
 					myCamera.transform.rotation = playerRotation;
 					myCamera.transform.parent = players[i].transform;
 					players[i].AddComponent<CameraScript>();
-					players[i].GetComponent<PlayerManager>().IsGameStarted = true;
+					players[i].GetComponent<Player>().IsGameStarted = true;
 					networkView.RPC("sendMessage", RPCMode.All, view.observed.name + " camera moved");
 				}
 			}
