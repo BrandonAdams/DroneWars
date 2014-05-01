@@ -36,6 +36,32 @@ public class Player : MonoBehaviour {
 
 	public GameObject nameDisplay;
 	private string playerName;
+	
+	private int _bulletFiringTime, _bulletFiringTimer, _bulletCounter, _missleFiringTime, _missleFiringTimer, _missleCounter;
+	private GameObject _gameCamera, whirringBladesObject1, whirringBladesObject2, shootingSoundObject;	
+	private ArrayList _bullets;
+	private bool /*_isGameOver, */_isGameStarted, _isFiringPrimary/*, _isFiringSecondary*/ = false;
+	private RaycastHit hit;
+
+	//Networking Variables
+	private bool _isTheHost;
+	private NetworkViewID _myID;
+	private NetworkView _myView;
+
+	//public variables
+	public Bullet bullet;
+	public Missle missle;
+
+	public bool IsTheHost{
+		get { return _isTheHost; }	
+		set { _isTheHost = value; }
+	}
+
+	public bool IsGameStarted
+	{
+		get { return _isGameStarted;}
+		set { _isGameStarted = value; }
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -48,6 +74,18 @@ public class Player : MonoBehaviour {
 		//set the cummulativeRotation to zero.
 		cummulativeRotationYAxis = 0.0f;
 		cummulativeRotationXAxis = 0.0f;
+
+		_myID = this.networkView.viewID;
+		_myView = NetworkView.Find(_myID);
+
+		_bullets = new ArrayList();
+		_bulletFiringTimer = _missleFiringTimer = 1000;
+		_bulletCounter = _missleCounter = 0;
+		_bulletFiringTime = 5;
+		_missleFiringTime = 300;
+		whirringBladesObject1 = this.transform.FindChild("AudioBlades1").gameObject;
+		whirringBladesObject2 = this.transform.FindChild("AudioBlades2").gameObject;
+		shootingSoundObject = this.transform.FindChild("AudioShootGunSound").gameObject;
 	}
 	
 	// Update is called once per frame
@@ -58,6 +96,53 @@ public class Player : MonoBehaviour {
 
 		if(this.GetComponent<NetworkView>().viewID.isMine)
 		{
+
+			/*if(_isGameOver)
+		{
+			
+		}*/
+			if(_isGameStarted)
+			{ 		
+				//players = GameObject.FindGameObjectsWithTag("Drone");
+				checkKeyDown();
+				checkKeyUp();
+				
+				if(_isFiringPrimary)
+				{
+					
+					_bulletFiringTimer++;
+					if(_bulletFiringTimer > _bulletFiringTime)
+					{
+						//create a bullet and place it just in front of the player
+						GameObject myPlayer = GameObject.Find(_myView.observed.name);
+						//Vector3 bulletSpawnPosition = myPlayer.transform.position; 
+						//bulletSpawnPosition += myPlayer.transform.forward * 8;
+						//bullet.initialize(4.0f, 3.0f, _myView.observed.name, _bulletCounter);
+						//bullet.Speed = 4.0f;
+						//Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 1);
+						
+						Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 1000.0f);
+						Debug.DrawRay(myPlayer.transform.position, transform.TransformDirection(myPlayer.transform.forward) * 1000.0f, Color.white);
+						Debug.Log (hit.collider.gameObject);
+						
+						if(hit.collider.gameObject.tag == "Drone") {
+							
+							Debug.Log ("Hit Enemy Drone");
+						}
+						
+						shootingSoundObject.audio.Play();
+						//_bullets.Add(bullet);
+						//reset the firing timer
+						//_bulletFiringTimer = 0;
+						//_bulletCounter++;
+						
+					}
+				}
+				//Increase the timer for the missle
+				_missleFiringTimer++;
+				
+			}
+
 			SteerWithMouse();
 			
 			updateMovement();
@@ -84,7 +169,111 @@ public class Player : MonoBehaviour {
 		transform.rotation = initialOrientation * currentRotation;
 		
 	}
+
+	void checkKeyDown()
+	{
+		if(Input.GetKeyDown (KeyCode.Mouse0))
+		{
+			_isFiringPrimary = true;
+			whirringBladesObject1.audio.mute = true;
+			whirringBladesObject2.audio.mute = true;
+			
+		}
+		
+		if(Input.GetKeyDown (KeyCode.Mouse1))
+		{
+			
+			Transform target = this.transform;
+			//Raycast -should be what we use or some other construct
+			
+			//For now ill just take the first player that connects to you
+			if(this.GetComponent<PlayerManager>().Players.Count > 0)
+			{
+				target = this.GetComponent<PlayerManager>().Players[0].transform;
+			}
+			
+			
+			
+			//Fire secondary weapon here 
+			if(_missleFiringTimer > _missleFiringTime)
+			{
+				//create a bullet and place it just in front of the player
+				GameObject myPlayer = GameObject.Find(_myView.observed.name);
+				Vector3 missleSpawnPosition = myPlayer.transform.position; 
+				missleSpawnPosition += myPlayer.transform.forward * 8;
+				Missle r = (Missle)Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 1);
+				networkView.RPC("initiateMissile", RPCMode.AllBuffered, r.networkView.viewID, target.gameObject.networkView.viewID);
+				//r.Initialize(.001f, 50, target.gameObject.networkView.viewID, _myView.observed.name, 1);
+				//reset the firing timer
+				_missleFiringTimer = 0;
+				_missleCounter++;				
+			}
+		}
+		
+	}
 	
+	[RPC]
+	void initiateMissile(NetworkViewID missile, NetworkViewID target) {
+		
+		GameObject m = NetworkView.Find(missile).observed.gameObject;
+		m.GetComponent<Missle>().Initialize(.001f, 50, target, _myView.observed.name, 1);
+		
+	}
+	
+	
+	void checkKeyUp()
+	{
+		if(Input.GetKeyUp (KeyCode.Mouse0))
+		{
+			_isFiringPrimary = false;
+			whirringBladesObject1.audio.mute = false;
+			
+		}
+	}
+	
+	void checkForWinningPlayer(GameObject[] playerList)
+	{		
+		
+		
+	}	
+	
+	/**
+     * A method to check if a non it player is close to a player that is it
+     **/
+	void checkPlayerDistances(GameObject[] playerList)
+	{
+		//go through the list of players and check to see which player is me
+		for(int i=0; i < playerList.Length; i++)
+		{
+			//GameObject thePlayer = playerList[i];
+			NetworkViewID theID = playerList[i].networkView.viewID;
+			NetworkView theView = NetworkView.Find(theID);
+			
+			//If the network view is mine then check myself against all other player in vicinity
+			if(theView.isMine)
+			{
+				//go through the list of players and check my distance from them
+				for(int j=0; j < playerList.Length; j++)
+				{
+					NetworkViewID playerID = playerList[i].networkView.viewID;
+					NetworkView playerView = NetworkView.Find(playerID);
+					if (playerView.isMine)
+						continue; //don't check the distance against myself
+					else{
+						
+					}                   
+				}
+				break; //don't continue to search for me in the list since I have been found.
+			}		
+		}
+	}//END checkPlayerDistances
+
+	/*void OnCollisionEnter(Collision collision)
+	{
+		if(collision.gameObject != this)
+			Debug.Log("hit something:" + collision.gameObject.name);// modify this to stop movement
+	}*/
+
 	void clampXRotation()
 	{
 		if(cummulativeRotationXAxis > maxUpRollRotation)
@@ -97,7 +286,9 @@ public class Player : MonoBehaviour {
 		} 
 		
 	}
-	
+
+
+
 	void updateMovement()
 	{
 		
@@ -350,21 +541,22 @@ public class Player : MonoBehaviour {
 		#endregion
 		
 		
-		Vector3 moveForward = new Vector3();
-		moveForward.x = transform.forward.x;
-		moveForward.z = transform.forward.z;
-		moveForward.Normalize();
-		transform.position += moveForward * speed;
+		//Vector3 moveForward = new Vector3();
+		//moveForward.x = transform.forward.x;
+		//moveForward.z = transform.forward.z;
+		//transform.forward *= speed;
+		transform.position += transform.forward * speed;
+		//this.rigidbody.AddForce(transform.forward * speed, ForceMode.Impulse);// if not kinematic (kinematic will tell you collisions not act on them)
+
+		//Vector3 strafe = new Vector3();
+		//strafe.x = transform.right.x;
+		//strafe.z = transform.right.z;
+		//strafe.Normalize();
+		transform.position += transform.right *strafeSpeed;
 		
-		Vector3 strafe = new Vector3();
-		strafe.x = transform.right.x;
-		strafe.z = transform.right.z;
-		strafe.Normalize();
-		transform.position += strafe*strafeSpeed;
-		
-		Vector3 lift = new Vector3();
-		lift.y = transform.up.y;
-		lift.Normalize();
-		transform.position += lift*liftSpeed;
+		//Vector3 lift = new Vector3();
+		//lift.y = transform.up.y;
+		//lift.Normalize();
+		transform.position += transform.up * liftSpeed;
 	}
 }

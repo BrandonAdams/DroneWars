@@ -396,7 +396,7 @@ public class Server : MonoBehaviour {
 		//Find the game object in charge of creating a new player and create the selected drone
 		GameObject spawnManager = GameObject.Find("SpawnManager_GO");
 		GameObject newPlayer = spawnManager.GetComponent<SpawnScript>().SpawnPlayer(2); //TODO fix this hack and make it dynamic
-		newPlayer.GetComponent<PlayerManager>().IsTheHost = isHost;
+		newPlayer.GetComponent<Player>().IsTheHost = isHost;
 		//change the name of the new player in the heirarchy to the player's name
 		GameObject.Find("tridentDrone(Clone)").name = playerName; //TODO Fix this hack and make it dynamic
 		//change the playerName variable in the PlayerLabel class to display the players name in game
