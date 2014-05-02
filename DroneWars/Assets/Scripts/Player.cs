@@ -26,9 +26,9 @@ public class Player : MonoBehaviour {
 	private float cummulativeRotationYAxis;
 	private float cummulativeRotationXAxis;	
 	// The rotation factor, this will control the speed we rotate at.
-	public float rotationSensitvity = 200.0f;
-	private float maxUpRollRotation = 35;
-	private float maxDownRollRotation = -35;
+	private float rotationSensitivity = 70.0f;
+	private float maxUpRollRotation = 20;
+	private float maxDownRollRotation = -20;
 	
 	//movement variables - exposed in inspector panel
 	public float maxSpeed = 2.0f; 		//maximum speed of vehicle
@@ -108,7 +108,7 @@ public class Player : MonoBehaviour {
 
 		if(this.GetComponent<NetworkView>().viewID.isMine)
 		{
-
+			characterController = this.GetComponent<CharacterController>();
 			/*if(_isGameOver)
 			{
 				
@@ -121,8 +121,8 @@ public class Player : MonoBehaviour {
 
 				SteerWithMouse();
 				// calculate steering forces that will change our position in space
-				transform.position += CalcForces();
-
+				//transform.position += CalcForces();
+				characterController.Move(CalcForces());
 				if(_isFiringPrimary)
 				{
 					
@@ -166,8 +166,7 @@ public class Player : MonoBehaviour {
 	}
 
 	private Vector3 KeyboardAcceleration ()
-	{	
-		Vector3 force;		
+	{					
 		//dv is desired velocity
 		Vector3 dv = Vector3.zero;
 
@@ -379,7 +378,6 @@ public class Player : MonoBehaviour {
 		planeVector.z = this.transform.forward.z;
 		planeVector *= speed;
 		dv += planeVector;
-		//transform.position += transform.forward * speed;
 		
 		Vector3 strafeVector = new Vector3();
 		strafeVector.x = transform.right.x;
@@ -387,7 +385,6 @@ public class Player : MonoBehaviour {
 		strafeVector.Normalize();
 		strafeVector *= strafeSpeed;
 		dv += strafeVector;
-		//transform.position += transform.right *strafeSpeed;
 		
 		Vector3 liftVector = new Vector3();
 		liftVector.y = transform.up.y;
@@ -395,7 +392,6 @@ public class Player : MonoBehaviour {
 		liftVector *= liftSpeed;
 
 		dv += liftVector; 
-		//transform.position += transform.up * liftSpeed;
 				
 		return dv;
 	}
@@ -424,8 +420,9 @@ public class Player : MonoBehaviour {
 
 		//Get the left/right Input from the Mouse and use time along with a scaling factor 
 		// to add a controlled amount to our cummulative rotation about the axis'.
-		cummulativeRotationYAxis += Input.GetAxis ("Mouse X") * Time.deltaTime * rotationSensitvity;
-		cummulativeRotationXAxis -= Input.GetAxis ("Mouse Y") * Time.deltaTime * rotationSensitvity;	
+		cummulativeRotationYAxis += Input.GetAxis ("Mouse X") * Time.deltaTime * rotationSensitivity;
+		cummulativeRotationXAxis -= Input.GetAxis ("Mouse Y") * Time.deltaTime * rotationSensitivity;
+
 		//CLAMP THE X ROTATION TO PREVENT IT FROM LOOKING TOO FAR
 		if(cummulativeRotationXAxis > maxUpRollRotation)
 		{
