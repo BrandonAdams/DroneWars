@@ -10,7 +10,7 @@ public class Player : MonoBehaviour {
 	public float speedMod = 0.05f;
 	
 	public float rotationSpeed = 5.0f;
-	public float maxLift = 3.0f;
+	public float maxLift = 1.0f;
 	public float tiltSpeed = 1.0f;
 	private bool isFalling = false;
 	private bool canFly = true;	
@@ -138,8 +138,7 @@ public class Player : MonoBehaviour {
 						//Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 1);
 
 						GameObject myPlayer = GameObject.Find(_myView.observed.name);
-						Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 1000.0f);
-						Debug.DrawRay(myPlayer.transform.position, transform.TransformDirection(myPlayer.transform.forward) * 1000.0f, Color.white);
+						//Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 500.0f);
 						Debug.Log (hit.collider.gameObject);
 						
 						if(hit.collider.gameObject.tag == "Drone") {
@@ -324,7 +323,7 @@ public class Player : MonoBehaviour {
 		/***** AUGMENTING OUR SPEED VARIABLES IF THE DRONE IS SHUT DOWN ******/
 		if(isFalling)
 		{
-			Debug.Log("Player is Falling");
+			//Debug.Log("Player is Falling");
 			if(liftSpeed < 0)
 			{
 				liftSpeed += speedMod;
@@ -345,17 +344,28 @@ public class Player : MonoBehaviour {
 				
 			}
 			
-			liftSpeed += ((timer/60) * -0.05f);
-			
-			timer++;
+			liftSpeed -= ((timer/60) * 1.0f);
+
+			if(liftSpeed < -maxLift) 
+				liftSpeed = -maxLift;
+
+			timer += 1.0f;
+
+
 		}
 		else if(isFalling == false)
 		{
-			Debug.Log("Player is not Falling");
+			//Debug.Log("Player is not Falling");
 			if(timer > 0)
 			{
-				timer -= 2;
-				liftSpeed += ((timer/60) * -0.05f);
+				timer -= 4;
+				liftSpeed += ((timer/60) * -.05f);
+
+				if(liftSpeed < -maxSpeed)
+					liftSpeed = -maxSpeed;
+
+				Debug.Log(liftSpeed);
+
 			}
 			else{
 				canFly = true;
@@ -448,11 +458,15 @@ public class Player : MonoBehaviour {
 			
 			Transform target = this.transform;
 			//Raycast -should be what we use or some other construct
+			GameObject myPlayer = GameObject.Find(_myView.observed.name);
+			Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 500.0f);
+			Debug.Log (hit.collider.gameObject);
+
 			
 			//For now ill just take the first player that connects to you
-			if(this.GetComponent<PlayerManager>().Players.Count > 0)
+			if(hit.collider.gameObject.tag == "Drone")
 			{
-				target = this.GetComponent<PlayerManager>().Players[0].transform;
+				target = hit.collider.gameObject.transform;
 			}
 
 			
@@ -460,12 +474,15 @@ public class Player : MonoBehaviour {
 			if(_missleFiringTimer > _missleFiringTime)
 			{
 				//create a bullet and place it just in front of the player
-				GameObject myPlayer = GameObject.Find(_myView.observed.name);
 				Vector3 missleSpawnPosition = myPlayer.transform.position; 
 				missleSpawnPosition += myPlayer.transform.forward * 8;
+				Debug.Log(missle);
+
 				Missle r = (Missle)Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 1);
-				networkView.RPC("initiateMissile", RPCMode.AllBuffered, r.networkView.viewID, target.gameObject.networkView.viewID);
-				//r.Initialize(.001f, 50, target.gameObject.networkView.viewID, _myView.observed.name, 1);
+
+				if(target != this.transform)
+					networkView.RPC("initiateMissile", RPCMode.AllBuffered, r.networkView.viewID, target.gameObject.networkView.viewID);
+
 				//reset the firing timer
 				_missleFiringTimer = 0;
 				_missleCounter++;				
@@ -475,6 +492,7 @@ public class Player : MonoBehaviour {
 		if(Input.GetKeyDown (KeyCode.F))
 		{ 
 			isFalling = !isFalling;
+			Debug.Log (isFalling);
 			if(!isFalling)
 				canFly = false;
 		}

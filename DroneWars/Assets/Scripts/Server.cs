@@ -232,9 +232,11 @@ public class Server : MonoBehaviour {
 				for(int i = 0; i < listOfPlayers.Length; i++)
 				{
 					//Debug.Log (listOfPlayers[i]);
-					string pName = listOfPlayers[i].GetComponent<PlayerLabel>().PlayerName;
-					GUI.Label (new Rect(90, labelYPosition, 450.0f, 40.0f), pName);
-					labelYPosition += 40;
+					if(listOfPlayers[i].GetComponent<PlayerLabel>() != null) {
+						string pName = listOfPlayers[i].GetComponent<PlayerLabel>().PlayerName;
+						GUI.Label (new Rect(90, labelYPosition, 450.0f, 40.0f), pName);
+						labelYPosition += 40;
+					}
 				}
 			}
 

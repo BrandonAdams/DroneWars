@@ -71,9 +71,9 @@ public class Missle : MonoBehaviour {
 
 		//Hunting our target
 		//Does Not begin searching until fired, which is noted in the initialize function
-		if(_preyID != NetworkViewID.unassigned) {
-			HuntTarget();
-		}
+	
+		HuntTarget();
+		
 		//Debug.Log("After: " + transform.forward);
 
 		//transform.forward.Normalize();
@@ -104,16 +104,21 @@ public class Missle : MonoBehaviour {
 
 	void HuntTarget()
 	{
-		//Debug.Log("Hunt PreyID: " + _preyID);
-		NetworkView targetView = NetworkView.Find(_preyID);
-		//make sure our target is still in the game before steering toward it
-		if(targetView)
-		{
-			GameObject target = targetView.observed.gameObject;
-			//get our new vector heading via our targets position and mine
-			Vector3 newHeading = target.transform.position - transform.position;
-			transform.forward = newHeading - transform.forward * _speed;
-			//transform.forward = newHeading.normalized;
+
+		if(_preyID != NetworkViewID.unassigned) {
+
+		
+			//Debug.Log("Hunt PreyID: " + _preyID);
+			NetworkView targetView = NetworkView.Find(_preyID);
+			//make sure our target is still in the game before steering toward it
+			if(targetView)
+			{
+				GameObject target = targetView.observed.gameObject;
+				//get our new vector heading via our targets position and mine
+				Vector3 newHeading = target.transform.position - transform.position;
+				transform.forward = newHeading - transform.forward * _speed;
+				//transform.forward = newHeading.normalized;
+			}
 		}
 	}
 }
