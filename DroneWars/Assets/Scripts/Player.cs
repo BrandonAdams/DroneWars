@@ -7,7 +7,7 @@ public class Player : MonoBehaviour {
 	public float strafeSpeed = 0.0f;
 	public float liftSpeed = 0.0f;
 	public float declSpeed = 0.95f;
-	public float speedMod = 0.05f;
+	private float speedMod = .05f;
 	
 	public float rotationSpeed = 5.0f;
 	public float maxLift = 1.0f;
@@ -17,11 +17,11 @@ public class Player : MonoBehaviour {
 	private float timer = 0;
 
 	//The Character Controller attached to this gameObject
-	CharacterController characterController;	
+	private CharacterController characterController;	
 	// The linear gravity factor. Made available in the Editor.
-	public float gravity = 100.0f;	
+	private float gravity = 100.0f;	
 	// mass of vehicle
-	public float mass = 1.0f;	
+	private float mass = 33.7f;	
 	// The cummulative rotation about the y and x-Axis.
 	private float cummulativeRotationYAxis;
 	private float cummulativeRotationXAxis;	
@@ -320,6 +320,7 @@ public class Player : MonoBehaviour {
 
 		#region Drone shut down parameters
 		/***** AUGMENTING OUR SPEED VARIABLES IF THE DRONE IS SHUT DOWN ******/
+		/**
 		if(isFalling)
 		{
 			//Debug.Log("Player is Falling");
@@ -371,7 +372,8 @@ public class Player : MonoBehaviour {
 				timer = 0;
 			}
 		}
-		#endregion Drone shut down parameters
+**/
+#endregion Drone shut down parameters
 
 		Vector3 planeVector = Vector3.zero;
 		planeVector.x = this.transform.forward.x;
@@ -400,7 +402,15 @@ public class Player : MonoBehaviour {
 	private Vector3 CalcForces ()
 	{
 		steeringForce = Vector3.zero;
-		steeringForce += KeyboardAcceleration ();
+		if(!canFly)
+		{
+			Vector3 gravityVector = Vector3.down;
+			gravityVector += new Vector3() * gravity;
+			steeringForce += (gravityVector * mass);
+		}
+		else
+			steeringForce += KeyboardAcceleration();
+
 
 		return steeringForce;		
 	}
@@ -416,31 +426,31 @@ public class Player : MonoBehaviour {
 
 	void SteerWithMouse ()
 	{
-
-
-		//Get the left/right Input from the Mouse and use time along with a scaling factor 
-		// to add a controlled amount to our cummulative rotation about the axis'.
-		cummulativeRotationYAxis += Input.GetAxis ("Mouse X") * Time.deltaTime * rotationSensitivity;
-		cummulativeRotationXAxis -= Input.GetAxis ("Mouse Y") * Time.deltaTime * rotationSensitivity;
-
-		//CLAMP THE X ROTATION TO PREVENT IT FROM LOOKING TOO FAR
-		if(cummulativeRotationXAxis > maxUpRollRotation)
+		if(canFly)
 		{
-			cummulativeRotationXAxis = maxUpRollRotation;
+			//Get the left/right Input from the Mouse and use time along with a scaling factor 
+			// to add a controlled amount to our cummulative rotation about the axis'.
+			cummulativeRotationYAxis += Input.GetAxis ("Mouse X") * Time.deltaTime * rotationSensitivity;
+			cummulativeRotationXAxis -= Input.GetAxis ("Mouse Y") * Time.deltaTime * rotationSensitivity;
+			
+			//CLAMP THE X ROTATION TO PREVENT IT FROM LOOKING TOO FAR
+			if(cummulativeRotationXAxis > maxUpRollRotation)
+			{
+				cummulativeRotationXAxis = maxUpRollRotation;
+			}		
+			else if(cummulativeRotationXAxis < maxDownRollRotation)
+			{
+				cummulativeRotationXAxis = maxDownRollRotation;
+			}
+			
+			
+			//Create a Quaternion representing our current cummulative rotation around the y-axis. 
+			Quaternion currentRotation = Quaternion.Euler (cummulativeRotationXAxis, cummulativeRotationYAxis, 0.0f);
+			
+			/** Use the quaternion to update the transform of the vehicle's Game Object based on 
+			 initial orientation and the accumulated rotation since the original orientation. **/
+			transform.rotation = initialOrientation * currentRotation;
 		}		
-		else if(cummulativeRotationXAxis < maxDownRollRotation)
-		{
-			cummulativeRotationXAxis = maxDownRollRotation;
-		}
-
-		
-		//Create a Quaternion representing our current cummulative rotation around the y-axis. 
-		Quaternion currentRotation = Quaternion.Euler (cummulativeRotationXAxis, cummulativeRotationYAxis, 0.0f);
-		
-		/** Use the quaternion to update the transform of the vehicle's Game Object based on 
-		 initial orientation and the accumulated rotation since the original orientation. **/
-		transform.rotation = initialOrientation * currentRotation;
-		
 	}
 
 	void checkKeyDown()
@@ -489,9 +499,10 @@ public class Player : MonoBehaviour {
 		if(Input.GetKeyDown (KeyCode.F))
 		{ 
 			isFalling = !isFalling;
-			Debug.Log (isFalling);
-			if(!isFalling)
+			if(isFalling)
 				canFly = false;
+			else
+				canFly = true;  //TODO: Need to change this to a different variable that will allow the drone to cycle on before giving control back to player
 		}
 		
 	}
