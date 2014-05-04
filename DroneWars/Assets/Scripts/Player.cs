@@ -583,6 +583,7 @@ public class Player : MonoBehaviour {
 	void updatePlayerHealth(NetworkViewID playerID) {		
 		GameObject player = NetworkView.Find(playerID).observed.gameObject;
 		player.GetComponent<Player>().updateHealth(-1.0f);
+		Debug.Log(player.GetComponent<Player>().HealthPercentage);
 	}
 
 }

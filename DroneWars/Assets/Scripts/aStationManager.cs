@@ -303,10 +303,10 @@ public class aStationManager : MonoBehaviour {
 	[RPC]
 	void updatePlayerHealth(NetworkViewID playerID)
 	{
-
 		GameObject player = NetworkView.Find(playerID).observed.gameObject;
-		player.GetComponent<aStationManager>().HealthNewValue = 500.0f;
-		player.GetComponent<aStationManager>().HealthNewValue *= player.GetComponent<Player>().HealthPercentage;
-		player.GetComponent<aStationManager>().TotalHealth = player.GetComponent<aStationManager>().HealthNewValue;
+		GameObject stationManager = GameObject.Find("GameManager_GO");
+		stationManager.GetComponent<aStationManager>().HealthNewValue = 500.0f;
+		stationManager.GetComponent<aStationManager>().HealthNewValue *= player.GetComponent<Player>().HealthPercentage;
+		stationManager.GetComponent<aStationManager>().TotalHealth = stationManager.GetComponent<aStationManager>().HealthNewValue;
 	}
 }
