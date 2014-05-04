@@ -48,7 +48,9 @@ public class Player : MonoBehaviour {
 	//Individual Player Variables
 	public GameObject nameDisplay;
 	private string playerName;
-	private float _health;
+	private float _maxHealth;
+	private float _currentHealth;
+
 	
 	private int _bulletFiringTime, _bulletFiringTimer, /*_bulletCounter*/_missleFiringTime, _missleFiringTimer, _missleCounter;
 	private GameObject _gameCamera, /*whirringBladesObject1, whirringBladesObject2, */shootingSoundObject;	
@@ -77,14 +79,19 @@ public class Player : MonoBehaviour {
 	}
 
 	public float Health {
-		get {return _health;}
+		get {return _maxHealth;}
+	}
+
+	public float HealthPercentage {
+		get {return _currentHealth / _maxHealth;}
 	}
 
 	// Use this for initialization
 	void Start () {
 
 		playerName = PlayerPrefs.GetString("playerName");
-		_health = 400.0f;
+		_maxHealth = 100.0f;
+		_currentHealth = _maxHealth;
 
 		//save the quaternion representing our initial orientation from the transform
 		initialOrientation = transform.rotation;
@@ -151,9 +158,10 @@ public class Player : MonoBehaviour {
 						if(hit.collider.gameObject.tag == "Drone") {
 							
 							Debug.Log ("Hit Enemy Drone");
-							hit.collider.gameObject.GetComponent<Player>().updateHealth(-20.0f);
+							GameObject hitPlayer = hit.collider.gameObject;
+							networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, hit.collider.gameObject.networkView.viewID);
+							GameObject.Find("GameManager_GO").GetComponent<aStationManager>().networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, hitPlayer.networkView.viewID);
 						}
-						
 						shootingSoundObject.audio.Play();
 						//_bullets.Add(bullet);
 						//reset the firing timer
@@ -175,7 +183,7 @@ public class Player : MonoBehaviour {
 
 	public void updateHealth(float change) {
 
-		_health += change;
+		_currentHealth += change;
 
 	}
 
@@ -568,6 +576,12 @@ public class Player : MonoBehaviour {
 		GameObject m = NetworkView.Find(missile).observed.gameObject;
 		m.GetComponent<Missle>().Initialize(.001f, 50, target, _myView.observed.name, 1);
 		
+	}
+
+	[RPC]
+	void updatePlayerHealth(NetworkViewID playerID) {		
+		GameObject player = NetworkView.Find(playerID).observed.gameObject;
+		player.GetComponent<Player>().updateHealth(-1.0f);
 	}
 
 }
