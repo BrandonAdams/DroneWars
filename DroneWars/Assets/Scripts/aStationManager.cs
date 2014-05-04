@@ -43,7 +43,14 @@ public class aStationManager : MonoBehaviour {
 		get { return gameOver; }
 		set { gameOver = value; }
 	}
-
+	public float HealthNewValue {
+		get {return _amountHealthNewValue;}
+		set {_amountHealthNewValue = value; }
+	}
+	public float TotalHealth {
+		get {return _totalHealth;}
+		set {_totalHealth = value; }
+	}
 
 	//create enums to access the different available game states
 	public enum GameModes { FreeForAll, Idle };
@@ -296,9 +303,10 @@ public class aStationManager : MonoBehaviour {
 	[RPC]
 	void updatePlayerHealth(NetworkViewID playerID)
 	{
-		_amountHealthNewValue = 500.0f;
+
 		GameObject player = NetworkView.Find(playerID).observed.gameObject;
-		_amountHealthNewValue *= player.GetComponent<Player>().HealthPercentage;
-		_totalHealth = _amountHealthNewValue;
+		player.GetComponent<aStationManager>().HealthNewValue = 500.0f;
+		player.GetComponent<aStationManager>().HealthNewValue *= player.GetComponent<Player>().HealthPercentage;
+		player.GetComponent<aStationManager>().TotalHealth = player.GetComponent<aStationManager>().HealthNewValue;
 	}
 }
