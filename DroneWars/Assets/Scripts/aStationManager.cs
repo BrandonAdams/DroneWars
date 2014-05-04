@@ -49,6 +49,9 @@ public class aStationManager : MonoBehaviour {
 	public GameModes gameMode = GameModes.Idle;
 	public GameMaps gameMap = GameMaps.None;
 
+	public GameObject miniMap;
+	public GameObject enemyMarker;
+
 	// Use this for initialization
 	void Start () {		 
 		gameStarted = false;
@@ -211,6 +214,14 @@ public class aStationManager : MonoBehaviour {
 			for(int i = 0; i < players.Length; i++)
 			{
 				GameObject currentPlayer = players[i];
+
+				if(players[i].networkView.viewID.isMine) {
+					miniMap = (GameObject)GameObject.Instantiate(miniMap, this.transform.position, this.transform.rotation);
+					miniMap.GetComponent<MiniMap>().ToFollow = players[i];
+				}else {
+					enemyMarker = (GameObject)GameObject.Instantiate(enemyMarker, this.transform.position, this.transform.rotation);
+					enemyMarker.GetComponent<MiniMap>().ToFollow = players[i];
+				}
 				//Debug.Log("moved player " + currentPlayer.name);
 				
 				int randomPoint = Random.Range(0, count);
