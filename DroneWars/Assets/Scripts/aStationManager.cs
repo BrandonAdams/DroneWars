@@ -216,11 +216,12 @@ public class aStationManager : MonoBehaviour {
 		case GameMaps.AbandonedStation:
 			int count = stationSpawnPointLocations.Length;
 			Vector3 playerPosition;
-			
+
 			for(int i = 0; i < players.Length; i++)
 			{
 				GameObject currentPlayer = players[i];
 
+				//Debug.Log("moved player " + currentPlayer.name);
 				if(players[i].networkView.viewID.isMine) {
 					miniMap = (GameObject)GameObject.Instantiate(miniMap, this.transform.position, this.transform.rotation);
 					miniMap.GetComponent<MiniMap>().ToFollow = players[i];
@@ -228,7 +229,6 @@ public class aStationManager : MonoBehaviour {
 					enemyMarker = (GameObject)GameObject.Instantiate(enemyMarker, this.transform.position, this.transform.rotation);
 					enemyMarker.GetComponent<MiniMap>().ToFollow = players[i];
 				}
-				//Debug.Log("moved player " + currentPlayer.name);
 				
 				int randomPoint = Random.Range(0, count);
 				playerPosition = stationSpawnPointLocations[randomPoint].transform.position;
@@ -248,8 +248,6 @@ public class aStationManager : MonoBehaviour {
 		}
 
 	}
-
-
 
 	/**
 	 * A method for checking the distance players are from each other
@@ -285,6 +283,14 @@ public class aStationManager : MonoBehaviour {
 		NetworkView playerView = NetworkView.Find(playerNetworkID);
 		GameObject playerToPlace = playerView.observed.gameObject;
 		playerToPlace.transform.position = position;
+
+		if(playerNetworkID.isMine) {
+			miniMap = (GameObject)GameObject.Instantiate(miniMap, this.transform.position, this.transform.rotation);
+			miniMap.GetComponent<MiniMap>().ToFollow = NetworkView.Find(playerNetworkID).observed.gameObject;
+		}else {
+			enemyMarker = (GameObject)GameObject.Instantiate(enemyMarker, this.transform.position, this.transform.rotation);
+			enemyMarker.GetComponent<MiniMap>().ToFollow = NetworkView.Find(playerNetworkID).observed.gameObject;
+		}
 	}
 
 	[RPC]
