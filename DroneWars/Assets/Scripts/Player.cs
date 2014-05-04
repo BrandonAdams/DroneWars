@@ -154,7 +154,8 @@ public class Player : MonoBehaviour {
 						GameObject myPlayer = GameObject.Find(_myView.observed.name);
 						Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 500.0f);
 						Debug.Log (hit.collider.gameObject);
-						
+
+
 						if(hit.collider.gameObject.tag == "Drone") {
 							
 							Debug.Log ("Hit Enemy Drone");
