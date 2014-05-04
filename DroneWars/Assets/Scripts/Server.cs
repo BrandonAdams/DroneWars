@@ -209,8 +209,6 @@ public class Server : MonoBehaviour {
 					currentState = ServerState.Initialized;
 					//gameManager.GetComponent<aStationManager>().GameStarted = true; 
 					networkView.RPC("startUpGame", RPCMode.All);  //start the game
-					Screen.lockCursor = true;
-					Screen.showCursor = false;
 				}
 			}
 			else
@@ -452,6 +450,8 @@ public class Server : MonoBehaviour {
 		GameObject gameManager = GameObject.Find("GameManager_GO");
 		currentState = ServerState.Initialized;
 		gameManager.GetComponent<aStationManager>().GameStarted = true;
+		Screen.lockCursor = true;
+		Screen.showCursor = false;
 	}
 
 	#endregion
