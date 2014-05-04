@@ -9,7 +9,7 @@ public class Missle : MonoBehaviour {
 	private int _missleTag, _missleLifePeriod, _missleCurrentLife, _missleGuidanceActive;
 	private string _missleName;
 	private NetworkViewID _myID, _preyID;
-	private bool _fired;
+	//private bool _fired;
 	//private NetworkView _myView;
 
 	//public accessors and getters
@@ -40,7 +40,7 @@ public class Missle : MonoBehaviour {
 		//_missleGuidanceActive = 10;
 		//missles current life
 		_missleCurrentLife = 0;
-		_fired = false;
+		//_fired = false;
 		//network components
 		//_myID = this.networkView.viewID;
 		//_myView = NetworkView.Find(_myID);
@@ -58,7 +58,7 @@ public class Missle : MonoBehaviour {
 		Debug.Log (target);
 		Debug.Log (playerName);
 		_preyID = target;
-		_fired = true;
+		//_fired = true;
 		//Debug.Log (_preyID);
 	}
 	

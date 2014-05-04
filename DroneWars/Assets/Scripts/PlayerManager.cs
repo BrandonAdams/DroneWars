@@ -7,9 +7,9 @@ public class PlayerManager : MonoBehaviour {
 	//private variables
 
 	private List<GameObject> _players;
-	private bool /*_isGameOver, */_isGameStarted, _isFiringPrimary/*, _isFiringSecondary*/ = false;
-	private NetworkViewID _myID;
-	private NetworkView _myView;
+	//private bool /*_isGameOver, */_isGameStarted/*, _isFiringSecondary*/ = false;
+	//private NetworkViewID _myID;
+	//private NetworkView _myView;
 	private int[] _spawnPointNumbers;
 
 
@@ -29,8 +29,8 @@ public class PlayerManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		_myID = this.networkView.viewID;
-		_myView = NetworkView.Find(_myID);
+		//_myID = this.networkView.viewID;
+		//_myView = NetworkView.Find(_myID);
 	
 	}
 	

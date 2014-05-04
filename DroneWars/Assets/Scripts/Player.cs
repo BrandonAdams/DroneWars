@@ -14,7 +14,7 @@ public class Player : MonoBehaviour {
 	public float tiltSpeed = 1.0f;
 	private bool isFalling = false;
 	private bool canFly = true;	
-	private float timer = 0;
+	//private float timer = 0;
 
 	//The Character Controller attached to this gameObject
 	private CharacterController characterController;	
@@ -45,12 +45,14 @@ public class Player : MonoBehaviour {
 	// The initial orientation.
 	private Quaternion initialOrientation;
 
+	//Individual Player Variables
 	public GameObject nameDisplay;
 	private string playerName;
+	private float _health;
 	
-	private int _bulletFiringTime, _bulletFiringTimer, _bulletCounter, _missleFiringTime, _missleFiringTimer, _missleCounter;
-	private GameObject _gameCamera, whirringBladesObject1, whirringBladesObject2, shootingSoundObject;	
-	private ArrayList _bullets;
+	private int _bulletFiringTime, _bulletFiringTimer, /*_bulletCounter*/_missleFiringTime, _missleFiringTimer, _missleCounter;
+	private GameObject _gameCamera, /*whirringBladesObject1, whirringBladesObject2, */shootingSoundObject;	
+	//private ArrayList _bullets;
 	private bool /*_isGameOver, */_isGameStarted, _isFiringPrimary/*, _isFiringSecondary*/ = false;
 	private RaycastHit hit;
 
@@ -74,10 +76,15 @@ public class Player : MonoBehaviour {
 		set { _isGameStarted = value; }
 	}
 
+	public float Health {
+		get {return _health;}
+	}
+
 	// Use this for initialization
 	void Start () {
 
 		playerName = PlayerPrefs.GetString("playerName");
+		_health = 400.0f;
 
 		//save the quaternion representing our initial orientation from the transform
 		initialOrientation = transform.rotation;
@@ -89,13 +96,13 @@ public class Player : MonoBehaviour {
 		_myID = this.networkView.viewID;
 		_myView = NetworkView.Find(_myID);
 
-		_bullets = new ArrayList();
+		//_bullets = new ArrayList();
 		_bulletFiringTimer = _missleFiringTimer = 1000;
-		_bulletCounter = _missleCounter = 0;
+		/*_bulletCounter =*/ _missleCounter = 0;
 		_bulletFiringTime = 5;
 		_missleFiringTime = 300;
-		whirringBladesObject1 = this.transform.FindChild("AudioBlades1").gameObject;
-		whirringBladesObject2 = this.transform.FindChild("AudioBlades2").gameObject;
+		//whirringBladesObject1 = this.transform.FindChild("AudioBlades1").gameObject;
+		//whirringBladesObject2 = this.transform.FindChild("AudioBlades2").gameObject;
 		shootingSoundObject = this.transform.FindChild("AudioShootGunSound").gameObject;
 	}
 	
@@ -138,12 +145,13 @@ public class Player : MonoBehaviour {
 						//Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 1);
 
 						GameObject myPlayer = GameObject.Find(_myView.observed.name);
-						//Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 500.0f);
+						Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 500.0f);
 						Debug.Log (hit.collider.gameObject);
 						
 						if(hit.collider.gameObject.tag == "Drone") {
 							
 							Debug.Log ("Hit Enemy Drone");
+							hit.collider.gameObject.GetComponent<Player>().updateHealth(-20.0f);
 						}
 						
 						shootingSoundObject.audio.Play();
@@ -162,6 +170,12 @@ public class Player : MonoBehaviour {
 
 
 		}
+
+	}
+
+	public void updateHealth(float change) {
+
+		_health += change;
 
 	}
 
@@ -512,7 +526,6 @@ public class Player : MonoBehaviour {
 		if(Input.GetKeyUp (KeyCode.Mouse0))
 		{
 			_isFiringPrimary = false;
-			whirringBladesObject1.audio.mute = false;
 			
 		}
 	}	
