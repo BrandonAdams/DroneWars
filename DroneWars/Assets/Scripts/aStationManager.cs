@@ -12,6 +12,8 @@ public class aStationManager : MonoBehaviour {
 	private bool takingDamage = false;
 	private bool lockedOn = false;
 	private string altReady = "ALT\nRDY";
+	private float _amountHealthNewValue = 500.0f;
+	private float _totalHealth = 500.0f;
 
 	//Public variables
 	// source images
@@ -22,6 +24,7 @@ public class aStationManager : MonoBehaviour {
 	public Texture2D hurtRight;
 	public Texture2D aim;
 	public Texture2D lockOn;
+	public Texture healthBar;
 	public int healthDisplay = 100;
 	public Camera myCamera;
 	public GameObject AbandonedStation;
@@ -97,7 +100,7 @@ public class aStationManager : MonoBehaviour {
 			gameActive = true;
 		}
 		else if(gameActive)
-		{
+		{			 
 
 		}
 		else if(gameOver)
@@ -140,6 +143,9 @@ public class aStationManager : MonoBehaviour {
 			}
 			//Place the crosshairs
 			GUI.Label (new Rect (Screen.width/ 2 - aim.width/2, Screen.height/ 2 - aim.height/2, aim.width, aim.height), aim);
+
+			GUI.DrawTexture(new Rect(10, Screen.height - 40, _totalHealth, 30), healthBar);
+
 		}
 	}
 
@@ -270,4 +276,12 @@ public class aStationManager : MonoBehaviour {
 		playerToPlace.transform.position = position;
 	}
 
+	[RPC]
+	void updatePlayerHealth(NetworkViewID playerID)
+	{
+		_amountHealthNewValue = 500.0f;
+		GameObject player = NetworkView.Find(playerID).observed.gameObject;
+		_amountHealthNewValue *= player.GetComponent<Player>().HealthPercentage;
+		_totalHealth = _amountHealthNewValue;
+	}
 }
