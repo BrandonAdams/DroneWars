@@ -50,6 +50,8 @@ public class Missle : MonoBehaviour {
 
 	void OnCollisionEnter(Collision collision) {
 
+		Debug.Log ("COLLLLLLLLLLLLLISIONNNNNNNNNNN");
+
 		if(_preyID != NetworkViewID.unassigned){
 			NetworkView targetView = NetworkView.Find(_preyID);
 

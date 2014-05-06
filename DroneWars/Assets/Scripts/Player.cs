@@ -14,7 +14,7 @@ public class Player : MonoBehaviour {
 	public float tiltSpeed = 1.0f;
 	private bool isFalling = false;
 	private bool canFly = true;	
-	//private float timer = 0;
+	private float timer = 0;
 
 	//The Character Controller attached to this gameObject
 	private CharacterController characterController;	
@@ -88,6 +88,7 @@ public class Player : MonoBehaviour {
 
 	public bool TakingDamage {
 		get {return _takingDamage;}
+		set {_takingDamage = value;}
 	}
 
 	// Use this for initialization
@@ -133,7 +134,14 @@ public class Player : MonoBehaviour {
 				
 			}*/
 			if(_isGameStarted)
-			{ 		
+			{ 	
+
+				if(_currentHealth <= 0) {
+					_currentHealth = 0;
+					isFalling = true;
+					canFly = false;
+				}
+
 				//players = GameObject.FindGameObjectsWithTag("Drone");
 				checkKeyDown();
 				checkKeyUp();
@@ -161,7 +169,7 @@ public class Player : MonoBehaviour {
 						Debug.Log (hit.collider.gameObject);
 
 
-						if(hit.collider.gameObject.tag == "Drone") {
+						if(hit.collider.gameObject.tag == "Drone" && !(hit.collider.gameObject.networkView.viewID.isMine)) {
 							
 							Debug.Log ("Hit Enemy Drone");
 							GameObject hitPlayer = hit.collider.gameObject;
@@ -191,8 +199,6 @@ public class Player : MonoBehaviour {
 	public void updateHealth(float change) {
 
 		_currentHealth += change;
-
-		_takingDamage = false;
 
 	}
 
@@ -356,7 +362,7 @@ public class Player : MonoBehaviour {
 
 		#region Drone shut down parameters
 		/***** AUGMENTING OUR SPEED VARIABLES IF THE DRONE IS SHUT DOWN ******/
-		/**
+
 		if(isFalling)
 		{
 			//Debug.Log("Player is Falling");
@@ -408,7 +414,6 @@ public class Player : MonoBehaviour {
 				timer = 0;
 			}
 		}
-**/
 #endregion Drone shut down parameters
 
 		Vector3 planeVector = Vector3.zero;
@@ -534,11 +539,11 @@ public class Player : MonoBehaviour {
 
 		if(Input.GetKeyDown (KeyCode.F))
 		{ 
-			isFalling = !isFalling;
-			if(isFalling)
-				canFly = false;
-			else
-				canFly = true;  //TODO: Need to change this to a different variable that will allow the drone to cycle on before giving control back to player
+			//isFalling = !isFalling;
+			//if(isFalling)
+				//canFly = false;
+			//else
+				//canFly = true;  //TODO: Need to change this to a different variable that will allow the drone to cycle on before giving control back to player
 		}
 		
 	}
@@ -594,9 +599,11 @@ public class Player : MonoBehaviour {
 
 	[RPC]
 	void updatePlayerHealth(float change, NetworkViewID playerID) {	
-		_takingDamage = true;
+
 		GameObject player = NetworkView.Find(playerID).observed.gameObject;
+		player.GetComponent<Player>().TakingDamage = true;
 		player.GetComponent<Player>().updateHealth(change);
+		//player.GetComponent<Player>().TakingDamage = false;
 		//Debug.Log(player.GetComponent<Player>().HealthPercentage);
 	}
 

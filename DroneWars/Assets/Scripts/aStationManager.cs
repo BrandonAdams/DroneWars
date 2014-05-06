@@ -101,6 +101,7 @@ public class aStationManager : MonoBehaviour {
 				if(view.isMine)
 				{
 					droneCameraPosition = players[i].transform.position;
+					droneCameraPosition.z += 5;
 					myCamera.transform.position = droneCameraPosition;
 					Quaternion playerRotation = players[i].transform.rotation;
 					myCamera.transform.rotation = playerRotation;
