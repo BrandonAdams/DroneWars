@@ -12,7 +12,7 @@ public class Server : MonoBehaviour {
 	public GameModes gameMode = GameModes.Lobby;
 	public ServerState currentState = ServerState.notInitialized; 
 	//network information
-	private string connectionIP = "129.21.28.5";
+	private string connectionIP = "129.21.28.3";
 	public int connectPort = 25002;
 
 	private NetworkViewID ID;
@@ -96,7 +96,7 @@ public class Server : MonoBehaviour {
 		{
 			//Entering the IP address
 			GUI.Label(new Rect(70, 50, 240.0f, 30.0f), "Enter your IP: ");
-			connectionIP = GUI.TextField(new Rect(280, 50, 130.0f, 30.0f), connectionIP);
+			connectionIP = GUI.TextField(new Rect(280, 50, 200.0f, 30.0f), connectionIP);
 			//Displaying the Port number to connect to
 			GUI.Label(new Rect(70, 90, 200.0f, 30.0f), "Port Number: ");
 			GUI.Label(new Rect(280, 90, 100.0f, 30.0f), connectPort + "");
