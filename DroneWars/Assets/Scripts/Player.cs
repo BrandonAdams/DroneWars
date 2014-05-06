@@ -161,7 +161,7 @@ public class Player : MonoBehaviour {
 							Debug.Log ("Hit Enemy Drone");
 							GameObject hitPlayer = hit.collider.gameObject;
 							networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, hit.collider.gameObject.networkView.viewID);
-							GameObject.Find("GameManager_GO").GetComponent<aStationManager>().networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, hitPlayer.networkView.viewID);
+							//GameObject.Find("GameManager_GO").GetComponent<aStationManager>().networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, hitPlayer.networkView.viewID);
 						}
 						shootingSoundObject.audio.Play();
 						//_bullets.Add(bullet);

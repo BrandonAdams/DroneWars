@@ -8,12 +8,15 @@ public class aStationManager : MonoBehaviour {
 	private Vector3 droneCameraPosition, lobbyCameraPosition;
 	private Quaternion lobbyCameraRotation;
 	private bool gameStarted, gameActive, gameOver;
+	public GameObject _player;
+
 	//variables related to damage/ warnings
 	private bool takingDamage = false;
 	private bool lockedOn = false;
-	private string altReady = "ALT\nRDY";
+	private string altReady = "Health";
 	private float _amountHealthNewValue = 500.0f;
 	private float _totalHealth = 500.0f;
+
 
 	//Public variables
 	// source images
@@ -29,6 +32,7 @@ public class aStationManager : MonoBehaviour {
 	public Camera myCamera;
 	public GameObject AbandonedStation;
 	public GameObject[] stationSpawnPointLocations;
+
 
 	//public accessor and getters
 	public bool GameStarted{
@@ -104,6 +108,7 @@ public class aStationManager : MonoBehaviour {
 					players[i].AddComponent<CameraScript>();
 					players[i].GetComponent<Player>().IsGameStarted = true;
 					networkView.RPC("sendMessage", RPCMode.All, view.observed.name + " camera moved");
+					_player = players[i];
 				}
 			}
 			//start updating gameplay material
@@ -139,7 +144,7 @@ public class aStationManager : MonoBehaviour {
 			GUI.Label(new Rect(cDown.width / 2 - cDown.width / 6, Screen.height - cDown.height / 2 - cDown.height / 6, cDown.width, cDown.height), altReady);
 			
 			//output health to player
-			GUI.Label(new Rect(Screen.width - cDown.width / 2 - cDown.width / 6, Screen.height - cDown.height / 2 - cDown.height / 7, cDown.width, cDown.height), "" + healthDisplay);
+			//GUI.Label(new Rect(Screen.width - cDown.width / 2 - cDown.width / 6, Screen.height - cDown.height / 2 - cDown.height / 7, cDown.width, cDown.height), "" + healthDisplay);
 			
 			if(takingDamage){
 				
@@ -154,7 +159,7 @@ public class aStationManager : MonoBehaviour {
 			//Place the crosshairs
 			GUI.Label (new Rect (Screen.width/ 2 - aim.width/2, Screen.height/ 2 - aim.height/2, aim.width, aim.height), aim);
 
-			GUI.DrawTexture(new Rect(10, Screen.height - 40, _totalHealth, 30), healthBar);
+			GUI.DrawTexture(new Rect(50, Screen.height - 60, _player.GetComponent<Player>().Health * _player.GetComponent<Player>().HealthPercentage, 30), healthBar);
 
 		}
 	}
