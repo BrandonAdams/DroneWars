@@ -48,6 +48,34 @@ public class Missle : MonoBehaviour {
 	
 	}
 
+	void OnCollisionEnter(Collision collision) {
+
+		if(_preyID != NetworkViewID.unassigned){
+			NetworkView targetView = NetworkView.Find(_preyID);
+
+			if(collision.collider.gameObject == targetView.observed.gameObject) { //checks if the collided object is the drone that we are following
+
+				collision.collider.gameObject.GetComponent<Player>().networkHealthUpdate(15.0f);
+				_missleCurrentLife = _missleLifePeriod + 1;
+
+			}
+
+		}else if(collision.collider.gameObject.tag == "Drone") { //checks if the collided object is a Drone, even if it isn't one we are seeking
+
+			collision.collider.gameObject.GetComponent<Player>().networkHealthUpdate(15.0f);
+			_missleCurrentLife = _missleLifePeriod + 1;
+
+		}else {
+
+			//Sets missle's life over maximum, destorying missle
+			_missleCurrentLife = _missleLifePeriod + 1;
+
+		}
+
+
+
+	}
+
 	public void Initialize(float missleSpeed, float misslePower, NetworkViewID target, string playerName, int tagID)
 	{
 		//instantiating our variables

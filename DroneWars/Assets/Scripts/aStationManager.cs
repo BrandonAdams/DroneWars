@@ -146,7 +146,7 @@ public class aStationManager : MonoBehaviour {
 			//output health to player
 			//GUI.Label(new Rect(Screen.width - cDown.width / 2 - cDown.width / 6, Screen.height - cDown.height / 2 - cDown.height / 7, cDown.width, cDown.height), "" + healthDisplay);
 			
-			if(takingDamage){
+			if(_player.GetComponent<Player>().TakingDamage){
 				
 				// Place the hurt makers (can't be seen unless hit)
 				GUI.Label (new Rect (0,0 , hurtLeft.width, hurtLeft.height), hurtLeft);

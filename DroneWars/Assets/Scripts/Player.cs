@@ -55,7 +55,7 @@ public class Player : MonoBehaviour {
 	private int _bulletFiringTime, _bulletFiringTimer, /*_bulletCounter*/_missleFiringTime, _missleFiringTimer, _missleCounter;
 	private GameObject _gameCamera, /*whirringBladesObject1, whirringBladesObject2, */shootingSoundObject;	
 	//private ArrayList _bullets;
-	private bool /*_isGameOver, */_isGameStarted, _isFiringPrimary/*, _isFiringSecondary*/ = false;
+	private bool /*_isGameOver, */_isGameStarted, _isFiringPrimary, _takingDamage/*, _isFiringSecondary*/ = false;
 	private RaycastHit hit;
 
 	//Networking Variables
@@ -86,12 +86,17 @@ public class Player : MonoBehaviour {
 		get {return _currentHealth / _maxHealth;}
 	}
 
+	public bool TakingDamage {
+		get {return _takingDamage;}
+	}
+
 	// Use this for initialization
 	void Start () {
 
 		playerName = PlayerPrefs.GetString("playerName");
 		_maxHealth = 100.0f;
 		_currentHealth = _maxHealth;
+		_takingDamage = false;
 
 		//save the quaternion representing our initial orientation from the transform
 		initialOrientation = transform.rotation;
@@ -160,7 +165,7 @@ public class Player : MonoBehaviour {
 							
 							Debug.Log ("Hit Enemy Drone");
 							GameObject hitPlayer = hit.collider.gameObject;
-							networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, hit.collider.gameObject.networkView.viewID);
+							networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, -1.0f, hit.collider.gameObject.networkView.viewID);
 							//GameObject.Find("GameManager_GO").GetComponent<aStationManager>().networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, hitPlayer.networkView.viewID);
 						}
 						shootingSoundObject.audio.Play();
@@ -182,10 +187,18 @@ public class Player : MonoBehaviour {
 
 	}
 
+	//Method to change health of player within itself
 	public void updateHealth(float change) {
 
 		_currentHealth += change;
 
+		_takingDamage = false;
+
+	}
+
+	//Method to be called to change the health of a this player from an outside class
+	public void networkHealthUpdate(float change) {
+		networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, change, networkView.viewID);
 	}
 
 	private Vector3 KeyboardAcceleration ()
@@ -580,10 +593,11 @@ public class Player : MonoBehaviour {
 	}
 
 	[RPC]
-	void updatePlayerHealth(NetworkViewID playerID) {		
+	void updatePlayerHealth(float change, NetworkViewID playerID) {	
+		_takingDamage = true;
 		GameObject player = NetworkView.Find(playerID).observed.gameObject;
-		player.GetComponent<Player>().updateHealth(-1.0f);
-		Debug.Log(player.GetComponent<Player>().HealthPercentage);
+		player.GetComponent<Player>().updateHealth(change);
+		//Debug.Log(player.GetComponent<Player>().HealthPercentage);
 	}
 
 }
