@@ -44,7 +44,7 @@ public class Missle : MonoBehaviour {
 		//network components
 		//_myID = this.networkView.viewID;
 		//_myView = NetworkView.Find(_myID);
-		_speed = 1.0f;
+		_speed = 2.0f;
 	
 	}
 

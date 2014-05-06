@@ -131,11 +131,10 @@ public class aStationManager : MonoBehaviour {
 
        	if(gameActive)
 		{
-
+			/**
 			GUI.skin.label.fontSize = 24;
 			
-			// Place the Map on screen
-			GUI.Label (new Rect(Screen.width- map.width, 0, map.width, map.height), map); //400
+
 			
 			// Place the lower two dials (cooldown - left & health - right)
 			GUI.Label (new Rect (0,Screen.height - cDown.height, cDown.width,cDown.height), cDown);
@@ -157,9 +156,12 @@ public class aStationManager : MonoBehaviour {
 			if(lockedOn){
 				GUI.Label (new Rect (Screen.width/2 - lockOn.width, Screen.height - lockOn.height*2, lockOn.width , lockOn.height), lockOn);
 			}
+			**/
+			// Place the Map on screen
+			GUI.Label (new Rect(Screen.width- map.width, 0, map.width, map.height), map); //400
 			//Place the crosshairs
 			GUI.Label (new Rect (Screen.width/ 2 - aim.width/2, Screen.height/ 2 - aim.height/2, aim.width, aim.height), aim);
-
+			//Place the health bar
 			GUI.DrawTexture(new Rect(50, Screen.height - 60, _player.GetComponent<Player>().Health * _player.GetComponent<Player>().HealthPercentage, 30), healthBar);
 
 		}
