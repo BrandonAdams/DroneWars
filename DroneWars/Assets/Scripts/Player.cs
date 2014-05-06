@@ -386,7 +386,7 @@ public class Player : MonoBehaviour {
 				
 			}
 			
-			liftSpeed -= ((timer/60) * 1.0f);
+			liftSpeed -= ((timer/60) * .1f);
 
 			if(liftSpeed < -maxLift) 
 				liftSpeed = -maxLift;
@@ -603,7 +603,7 @@ public class Player : MonoBehaviour {
 		GameObject player = NetworkView.Find(playerID).observed.gameObject;
 		player.GetComponent<Player>().TakingDamage = true;
 		player.GetComponent<Player>().updateHealth(change);
-		//player.GetComponent<Player>().TakingDamage = false;
+		player.GetComponent<Player>().TakingDamage = false;
 		//Debug.Log(player.GetComponent<Player>().HealthPercentage);
 	}
 
