@@ -81,6 +81,7 @@ public class Server : MonoBehaviour {
 	 **/
 	void CreateLobbyWindow (int windowID)
 	{
+
 		GUI.backgroundColor = Color.red;
 		//setting our font size
 		GUI.skin.textField.fontSize = 20;
@@ -141,6 +142,7 @@ public class Server : MonoBehaviour {
 		}
 		else if(inClient)
 		{
+
 			//Entering the IP address
 			GUI.Label(new Rect(70, 50, 350.0f, 30.0f), "Enter Host IP: ");
 			connectionIP = GUI.TextField(new Rect(280, 50, 130.0f, 30.0f), connectionIP);
@@ -241,6 +243,9 @@ public class Server : MonoBehaviour {
 		}
 		else
 		{
+			Screen.lockCursor = false;
+			Screen.showCursor = true;
+
 			GUI.Label(new Rect((lobbyWindowWidth / 2) - 90.0f, 20, 180.0f, 30.0f), "MAIN LOBBY");
 			GUI.Label(new Rect(70, 70, 200.0f, 30.0f), "Select a Drone");
 			if(GUI.Button (new Rect(90, 110, 150.0f, updatingButtonHeight), "Polarity"))
