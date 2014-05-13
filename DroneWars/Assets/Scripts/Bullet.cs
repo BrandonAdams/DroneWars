@@ -6,10 +6,8 @@ public class Bullet : MonoBehaviour {
 	//private variables
 	private float _speed;
 	private float _power;
-	private int _bulletTag, _bulletLifePeriod, _bulletCurrentLife;
-	private string _bulletName;
-	//private NetworkViewID _myID;
-	//private NetworkView _myView;
+	private int _bulletAge;
+	private Vector3 _magLocation;
 
 	//public accessors and getters
 	public float Speed{
@@ -20,50 +18,36 @@ public class Bullet : MonoBehaviour {
 		get { return _power; }
 		set { _power = value; }
 	}
-	public int BulletTag{
-		get { return _bulletTag; }
+	public int BulletAge{
+		get { return _bulletAge; }
+		set { _bulletAge = value; }
 	}
-	public string BulletName{
-		get { return _bulletName; }
+	public Vector3 Position{
+		get { return transform.position; }
+	}
+	public Vector3 MagLocation{
+		get { return _magLocation; }
 	}
 
 	// Use this for initialization
 	void Start () {
-		_bulletLifePeriod = 200;
-		_bulletCurrentLife = 0;
-		_speed = 4.0f;
-		//_myID = this.networkView.viewID;
-		//_myView = NetworkView.Find(_myID);
-	}
-
-	public void initialize(float bulletSpeed, float bulletPower, string playerName, int tagID)
-	{
-		this.Speed = bulletSpeed;
-		_power = bulletPower;
-		_bulletName = playerName + "Bullet" + tagID;
-		_bulletTag = tagID;
+		_speed = 0;
+		_magLocation = new Vector3(-500, 0 , 0);
+		transform.position = _magLocation;
 	}
 
 	// Update is called once per frame
 	void Update () {
+		//move our bullet 
 		transform.position += transform.forward * _speed;
-		//make our bullet older
-		_bulletCurrentLife++;
-		//our bullet has died of old age
-		if(_bulletCurrentLife > _bulletLifePeriod)
-		{
-			GameObject[] liveBullets = GameObject.FindGameObjectsWithTag("Bullet");
-			for(int i = 0; i < liveBullets.Length; i++)
-			{
-				if(liveBullets[i].networkView.isMine)
-				{
-					//Debug.Log("Destroyed bullet");
-					Network.Destroy(liveBullets[i]);
-					break;
-				}
-			}
+	}
 
-		}
-
+	public void fire(Vector3 startingPosition, Quaternion startingRotation, float bulletSpeed, float bulletPower)
+	{
+		_bulletAge = 0;
+		transform.position = startingPosition;
+		transform.rotation = startingRotation;
+		_speed = bulletSpeed;
+		_power = bulletPower;
 	}
 }
