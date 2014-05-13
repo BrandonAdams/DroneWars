@@ -4,9 +4,8 @@ using System.Collections.Generic;
 
 public class BulletManager : MonoBehaviour {
 
-	private Stack<Bullet> _allBullets;
-	private Stack<Bullet> _activeBullets;
-	private Stack<Bullet> _pooledBullets;
+	private ArrayList _allBullets;
+	private Bullet *bulletPointer;
 	private int _lifeSpan;
 	private float _shellSpeed, _shellPower;
 	private GameObject owner;
@@ -18,9 +17,7 @@ public class BulletManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		_allBullets = new Stack<Bullet>();
-		_pooledBullets = new Stack<Bullet>();
-		_activeBullets = new Stack<Bullet>();
+		_allBullets = new ArrayList();
 	}
 	
 	// Update is called once per frame
@@ -46,11 +43,13 @@ public class BulletManager : MonoBehaviour {
 			_shellPower = .01f;
 			_lifeSpan = aLifeTime;
 			Network.Instantiate(bullet, bullet.Position, bullet.transform.rotation, 10);
-			_allBullets.Push(bullet);
+			_allBullets.Add(bullet);
 		}
+		bulletPointer = _allBullets;
 
 	}
 
+	/**
 	bool fireBullet(Vector3 startingPoint, Quaternion startingRotation)
 	{
 		//check to see if we have any bullets in our pool of bullets available
@@ -69,6 +68,7 @@ public class BulletManager : MonoBehaviour {
 		Debug.Log("Reloading more ammo");
 		return false;
 	}
+	**/
 
 
 
