@@ -8,6 +8,7 @@ public class BulletManager : MonoBehaviour {
 	private Stack<Bullet> _activeBullets;
 	private Stack<Bullet> _pooledBullets;
 	private int _lifeSpan;
+	private float _shellSpeed, _shellPower;
 	private GameObject owner;
 
 	public Stack<Bullet> ActiveBullets
@@ -40,12 +41,14 @@ public class BulletManager : MonoBehaviour {
 		for(int i = 0; i < numberOfPooledBullets; i++)
 		{
 			Bullet bullet = new Bullet();
-			//TODO: check drone type and set bullet speed here
+			//TODO: check drone type and set bullet speed and power here
+			_shellSpeed = 20.0f;
+			_shellPower = .01f;
 			_lifeSpan = aLifeTime;
 			Network.Instantiate(bullet, bullet.Position, bullet.transform.rotation, 10);
 			_allBullets.Push(bullet);
 		}
-		_pooledBullets = _allBullets;
+
 	}
 
 	bool fireBullet(Vector3 startingPoint, Quaternion startingRotation)
@@ -56,9 +59,7 @@ public class BulletManager : MonoBehaviour {
 			Bullet firedShell = _pooledBullets.Pop();
 
 			//have the bullet fire
-			float shellSpeed = 20.0f;
-			float shellPower = .01f;
-			firedShell.fire(owner.transform.position, owner.transform.rotation, shellSpeed, shellPower);
+			firedShell.fire(owner.transform.position, owner.transform.rotation, _shellSpeed, _shellPower);
 
 			//add this bullet to the list of active bullets
 			_activeBullets.Push(firedShell);
