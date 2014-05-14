@@ -8,8 +8,13 @@ public class Bullet : MonoBehaviour {
 	private float _power;
 	private int _bulletAge;
 	private Vector3 _magLocation;
+	private bool _active;
 
 	//public accessors and getters
+	public bool IsActive{
+		get { return _active; }
+		set { _active = value; }
+	}
 	public float Speed{
 		get { return _speed; }
 		set { _speed = value; }
