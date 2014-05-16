@@ -18,6 +18,7 @@ public class Player : MonoBehaviour {
 
 	//The Character Controller attached to this gameObject
 	private CharacterController characterController;	
+	private BulletManager bManager;
 	// The linear gravity factor. Made available in the Editor.
 	private float gravity = 100.0f;	
 	// mass of vehicle
@@ -112,11 +113,14 @@ public class Player : MonoBehaviour {
 		//_bullets = new ArrayList();
 		_bulletFiringTimer = _missleFiringTimer = 1000;
 		/*_bulletCounter =*/ _missleCounter = 0;
-		_bulletFiringTime = 5;
+		_bulletFiringTime = 10;
 		_missleFiringTime = 300;
 		//whirringBladesObject1 = this.transform.FindChild("AudioBlades1").gameObject;
 		//whirringBladesObject2 = this.transform.FindChild("AudioBlades2").gameObject;
 		shootingSoundObject = this.transform.FindChild("AudioShootGunSound").gameObject;
+		bManager = this.GetComponent<BulletManager>();
+		bManager.Owner = _myView.observed.gameObject;
+		bManager.initialize(1, 1.0f);
 	}
 	
 	// Update is called once per frame
@@ -150,10 +154,11 @@ public class Player : MonoBehaviour {
 				// calculate steering forces that will change our position in space
 				//transform.position += CalcForces();
 				characterController.Move(CalcForces());
+
+				/***************** FIRING OUR PRIMARY GUN  ***********************/
+				_bulletFiringTimer++;
 				if(_isFiringPrimary)
 				{
-					
-					_bulletFiringTimer++;
 					if(_bulletFiringTimer > _bulletFiringTime)
 					{
 						//create a bullet and place it just in front of the player
@@ -168,6 +173,9 @@ public class Player : MonoBehaviour {
 						Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 500.0f);
 						Debug.Log (hit.collider.gameObject);
 
+						//fire a bullet object for firing conveyance
+						bManager.fireBullet(myPlayer.transform.position, myPlayer.transform.rotation);
+
 
 						if(hit.collider.gameObject.tag == "Drone" && !(hit.collider.gameObject.networkView.viewID.isMine)) {
 							
@@ -179,11 +187,13 @@ public class Player : MonoBehaviour {
 						shootingSoundObject.audio.Play();
 						//_bullets.Add(bullet);
 						//reset the firing timer
-						//_bulletFiringTimer = 0;
+						_bulletFiringTimer = 0;
 						//_bulletCounter++;
 						
 					}
 				}
+				/***************** END FIRING OUR PRIMARY GUN  ********************/
+
 				//Increase the timer for the missle
 				_missleFiringTimer++;
 

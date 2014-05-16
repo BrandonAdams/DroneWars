@@ -27,16 +27,12 @@ public class Bullet : MonoBehaviour {
 		get { return _bulletAge; }
 		set { _bulletAge = value; }
 	}
-	public Vector3 Position{
-		get { return transform.position; }
-	}
 	public Vector3 MagLocation{
 		get { return _magLocation; }
 	}
 
 	// Use this for initialization
 	void Start () {
-		_speed = 0;
 		_magLocation = new Vector3(-500, 0 , 0);
 		transform.position = _magLocation;
 	}
@@ -45,6 +41,15 @@ public class Bullet : MonoBehaviour {
 	void Update () {
 		//move our bullet 
 		transform.position += transform.forward * _speed;
+
+	}
+
+	void reset()
+	{
+		_speed = 0;
+		_active = false;
+		transform.position = _magLocation;
+		Debug.Log ("BULLET POSITION RESET");
 	}
 
 	public void fire(Vector3 startingPosition, Quaternion startingRotation, float bulletSpeed, float bulletPower)
@@ -54,5 +59,9 @@ public class Bullet : MonoBehaviour {
 		transform.rotation = startingRotation;
 		_speed = bulletSpeed;
 		_power = bulletPower;
+		Debug.Log("Bullet has been fired");
+		Invoke("reset", 10.0f);
 	}
+
+
 }

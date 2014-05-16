@@ -4,12 +4,15 @@ using System.Collections.Generic;
 
 public class BulletManager : MonoBehaviour {
 
+	//public variables
+	public GameObject bullet;
 	//private variables
-	private ArrayList _allBullets;
-	private Bullet bulletPointer;
+	private List<GameObject> _allBullets;
+	private GameObject bulletPointer;
 	private int _lifeSpan, _pointAtLocation;
 	private float _shellSpeed, _shellPower;
 	private GameObject _owner;
+	private int counter;
 
 	//accessors and getters
 	public GameObject Owner{
@@ -18,83 +21,99 @@ public class BulletManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		_allBullets = new ArrayList();
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		/**
 		//creating a temp variable to manipulate our bullets
 		Bullet aBullet;
-		//iterating over all of our active bullets
+
+		//iterating over all of our active bullets - aging them (if too old then reset the bullet)
+		for(int i = 0; i < _allBullets.Count; i++)
+		{
+			if(_allBullets[i].GetComponent<Bullet>().IsActive)
+			{
+				_allBullets[i].GetComponent<Bullet>().BulletAge++;
+				Debug.Log(_allBullets[i].GetComponent<Bullet>().BulletAge);
+				if(_allBullets[i].GetComponent<Bullet>().BulletAge >= _lifeSpan)
+				{
+					_allBullets[i].GetComponent<Bullet>().IsActive = false;
+					Debug.Log("BULLET DEACTIVATED");
+					_allBullets[i].GetComponent<Bullet>().transform.position = _allBullets[i].GetComponent<Bullet>().MagLocation;
+				}
+			}
+
+		}
+		**/
 	}
 
-	void initialize(int droneType, int amountOfPooledBullets = 80, float aSpeed = 20, float aPower = .01f, int aLifeTime = 200)
+	public void initialize(int droneType, float aSpeed, int amountOfPooledBullets = 80, float aPower = .01f, int aLifeTime = 200)
 	{
 		int numberOfPooledBullets = amountOfPooledBullets;
-		
+		bullet.GetComponent<Bullet>().Speed = 0;
+		bullet.GetComponent<Bullet>().IsActive = false;
+		counter = 0;
+
+		if(_allBullets == null)
+		{
+			_allBullets = new List<GameObject>();
+		}
 		for(int i = 0; i < numberOfPooledBullets; i++)
 		{
-			Bullet bullet = new Bullet();
+
 			//TODO: check drone type and set bullet speed and power here
-			_shellSpeed = 20.0f;
-			_shellPower = .01f;
+			_shellSpeed = aSpeed;
+			_shellPower = aPower;
 			_lifeSpan = aLifeTime;
-			Network.Instantiate(bullet, bullet.Position, bullet.transform.rotation, 10);
+			Network.Instantiate(bullet, bullet.GetComponent<Bullet>().MagLocation, _owner.transform.rotation, 10 + counter);
+			Debug.Log(_allBullets);
+
 			_allBullets.Add(bullet);
+			counter++;
 		}
+
 		_pointAtLocation = 0;
-		bulletPointer = (Bullet)_allBullets[_pointAtLocation];
+		bulletPointer = _allBullets[_pointAtLocation].gameObject;
 
 	}
 
-	bool fireBullet(Vector3 startingPoint, Quaternion startingRotation)
+	public bool fireBullet(Vector3 startingPoint, Quaternion startingRotation)
 	{
+		counter++;
 		//if the bullet that power 
-		if(bulletPointer.IsActive)
+		Debug.Log ("Bullet IsActive = " + bulletPointer.GetComponent<Bullet>().IsActive);
+		if(!bulletPointer.GetComponent<Bullet>().IsActive)
 		{
 			//fire the bullet
-			bulletPointer.fire(_owner.transform.position, _owner.transform.rotation, _shellSpeed, _shellPower);
+			bulletPointer.GetComponent<Bullet>().fire(_owner.transform.position, _owner.transform.rotation, _shellSpeed, _shellPower);
 			//set the bullet to be active
-			bulletPointer.IsActive = true;
+			bulletPointer.GetComponent<Bullet>().IsActive = true;
+			Debug.Log ("Bullet IsActive = " + bulletPointer.GetComponent<Bullet>().IsActive);
 			//set the bulletPointer to point at the next bullet in line
 			if(_pointAtLocation < _allBullets.Count - 1)
 			{
 				_pointAtLocation++;
-				bulletPointer = (Bullet)_allBullets[_pointAtLocation];
+				bulletPointer = null;
+				bulletPointer = _allBullets[_pointAtLocation].gameObject;
+				Debug.Log("Switched Bullet");
+				Debug.Log ("Bullet IsActive = " + bulletPointer.GetComponent<Bullet>().IsActive);
 			}
+			//if we are at the end of our array point at the beginning bullet again
 			else if(_pointAtLocation >= _allBullets.Count - 1)
 			{
 				_pointAtLocation = 0;
-				bulletPointer = (Bullet)_allBullets[_pointAtLocation];
+				bulletPointer = _allBullets[_pointAtLocation].gameObject;
+				Debug.Log("Back to beginning of array");
+				Debug.Log ("Bullet IsActive = " + bulletPointer.GetComponent<Bullet>().IsActive);
 			}
-			//move the pointer to the next object in our all bullets array
-
-		}
-		Debug.Log("Reloading more ammo");
-		return false;
-	}
-
-	/**
-	bool fireBullet(Vector3 startingPoint, Quaternion startingRotation)
-	{
-		//check to see if we have any bullets in our pool of bullets available
-		if(_pooledBullets.Count > 0)
-		{
-			Bullet firedShell = _pooledBullets.Pop();
-
-			//have the bullet fire
-			firedShell.fire(owner.transform.position, owner.transform.rotation, _shellSpeed, _shellPower);
-
-			//add this bullet to the list of active bullets
-			_activeBullets.Push(firedShell);
-
+			Debug.Log("Fired Bullet" + counter);
 			return true;
 		}
-		Debug.Log("Reloading more ammo");
+		Debug.Log("Reloading more ammo"+ counter);
 		return false;
+
 	}
-	**/
-
-
 
 }
