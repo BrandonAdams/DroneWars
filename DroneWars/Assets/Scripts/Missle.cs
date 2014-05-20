@@ -48,7 +48,8 @@ public class Missle : MonoBehaviour {
 	
 	}
 
-	void OnCollisionEnter(Collision collision) {
+	/*
+	void OnControllerColliderHit(ControllerColliderHit collision) {
 
 		Debug.Log ("COLLLLLLLLLLLLLISIONNNNNNNNNNN");
 
@@ -78,6 +79,8 @@ public class Missle : MonoBehaviour {
 
 	}
 
+*/
+
 	public void Initialize(float missleSpeed, float misslePower, NetworkViewID target, string playerName, int tagID)
 	{
 		//instantiating our variables
@@ -85,8 +88,8 @@ public class Missle : MonoBehaviour {
 		_power = misslePower;
 		_missleName = playerName + "Missle" + tagID;
 		_missleTag = tagID;
-		Debug.Log (target);
-		Debug.Log (playerName);
+		//Debug.Log (target);
+		//Debug.Log (playerName);
 		_preyID = target;
 		//_fired = true;
 		//Debug.Log (_preyID);
@@ -150,5 +153,9 @@ public class Missle : MonoBehaviour {
 				//transform.forward = newHeading.normalized;
 			}
 		}
+	}
+
+	public void killMissle() {
+		_missleCurrentLife = _missleLifePeriod + 1;
 	}
 }

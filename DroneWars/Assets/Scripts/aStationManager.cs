@@ -180,12 +180,11 @@ public class aStationManager : MonoBehaviour {
 				GUI.DrawTexture(new Rect(30, Screen.height - 130, cDownMissle.width * .80f, cDownMissle.height * .80f ), cDownMissle);
 			}
 
+			//Place the health bar
+			GUI.DrawTexture(new Rect(30 + (80 * (1 - (_player.GetComponent<Player>().Health *_player.GetComponent<Player>().HealthPercentage/100))), Screen.height - 131, (healthBar.width * .80f) * (_player.GetComponent<Player>().Health * _player.GetComponent<Player>().HealthPercentage/100), 100), healthBar);
+
 			GUI.DrawTexture(new Rect(30, Screen.height - 130, healthTop.width * .80f, healthTop.height * .80f ),healthTop);
 
-			//Place the health bar
-			GUI.DrawTexture(new Rect(30, Screen.height - 130, (healthBar.width * .80f) * (_player.GetComponent<Player>().Health * _player.GetComponent<Player>().HealthPercentage/100), 95), healthBar);
-
-			Debug.Log (_player.GetComponent<Player>().Health * _player.GetComponent<Player>().HealthPercentage);
 
 		}
 	}

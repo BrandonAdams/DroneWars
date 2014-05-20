@@ -106,6 +106,45 @@ public class Player : MonoBehaviour {
 		get {return _missleFiringTimer;}
 	}
 
+	void OnControllerColliderHit(ControllerColliderHit collision) {
+		
+		Debug.Log (collision.collider.gameObject);
+
+		if(collision.collider.gameObject.tag == "Missle") {
+
+			Debug.Log ("COLLLLLLLLLLLLLISIONNNNNNNNNNN");
+
+			networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, -55.0f, _myView.viewID);
+
+			collision.collider.gameObject.GetComponent<Missle>().killMissle();
+
+			Debug.Log ("Dealt Damage !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		}
+
+		/*
+		if(_preyID != NetworkViewID.unassigned){
+			NetworkView targetView = NetworkView.Find(_preyID);
+			
+			if(collision.collider.gameObject == targetView.observed.gameObject) { //checks if the collided object is the drone that we are following
+				
+				collision.collider.gameObject.GetComponent<Player>().networkHealthUpdate(15.0f);
+				_missleCurrentLife = _missleLifePeriod + 1;
+				
+			}
+			
+		}else if(collision.collider.gameObject.tag == "Drone") { //checks if the collided object is a Drone, even if it isn't one we are seeking
+			
+			collision.collider.gameObject.GetComponent<Player>().networkHealthUpdate(15.0f);
+			_missleCurrentLife = _missleLifePeriod + 1;
+			
+		}else {
+			
+			//Sets missle's life over maximum, destorying missle
+			_missleCurrentLife = _missleLifePeriod + 1;
+			
+		}*/
+	}
+
 	// Use this for initialization
 	void Start () {
 
@@ -197,7 +236,7 @@ public class Player : MonoBehaviour {
 							_hitEnemy = true;
 							Invoke ("resetCrosshairs", 2);
 							GameObject hitPlayer = hit.collider.gameObject;
-							networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, -1.0f, hit.collider.gameObject.networkView.viewID);
+							networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, -3.0f, hit.collider.gameObject.networkView.viewID);
 							//GameObject.Find("GameManager_GO").GetComponent<aStationManager>().networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, hitPlayer.networkView.viewID);
 						}
 						shootingSoundObject.audio.Play();
@@ -561,7 +600,7 @@ public class Player : MonoBehaviour {
 				//create a bullet and place it just in front of the player
 				Vector3 missleSpawnPosition = myPlayer.transform.position; 
 				missleSpawnPosition += myPlayer.transform.forward * 8;
-				Debug.Log(missle);
+				//Debug.Log(missle);
 
 				Missle r = (Missle)Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 1);
 

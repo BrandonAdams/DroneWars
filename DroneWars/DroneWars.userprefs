@@ -1,9 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\aStationManager.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Player.cs">
     <Files>
-      <File FileName="Assets\Scripts\aStationManager.cs" Line="169" Column="139" />
-      <File FileName="Assets\Scripts\Player.cs" Line="106" Column="35" />
+      <File FileName="Assets\Scripts\aStationManager.cs" Line="188" Column="4" />
+      <File FileName="Assets\Scripts\Player.cs" Line="603" Column="7" />
+      <File FileName="Assets\Scripts\Missle.cs" Line="126" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
