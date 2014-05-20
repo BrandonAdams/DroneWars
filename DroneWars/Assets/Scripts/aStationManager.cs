@@ -21,13 +21,16 @@ public class aStationManager : MonoBehaviour {
 	//Public variables
 	// source images
 	public Texture2D map;
-	public Texture2D cDown;
-	public Texture2D health;
+	public Texture2D healthBack;
+	public Texture2D cDownMissle;
+	public Texture2D engine;
+	public Texture healthBar;
+	public Texture2D healthTop;
 	public Texture2D hurtLeft;
 	public Texture2D hurtRight;
 	public Texture2D aim;
+	public Texture2D hitmarker;
 	public Texture2D lockOn;
-	public Texture healthBar;
 	public int healthDisplay = 100;
 	public Camera myCamera;
 	public GameObject AbandonedStation;
@@ -145,7 +148,7 @@ public class aStationManager : MonoBehaviour {
 			
 			//output health to player
 			//GUI.Label(new Rect(Screen.width - cDown.width / 2 - cDown.width / 6, Screen.height - cDown.height / 2 - cDown.height / 7, cDown.width, cDown.height), "" + healthDisplay);
-			
+			**/
 			if(_player.GetComponent<Player>().TakingDamage){
 				
 				// Place the hurt makers (can't be seen unless hit)
@@ -153,16 +156,36 @@ public class aStationManager : MonoBehaviour {
 				GUI.Label (new Rect (Screen.width-hurtRight.width, 0, hurtRight.width, hurtRight.height), hurtRight);
 			}
 			// Place the 'locked-on' warning
-			if(lockedOn){
+			/*if(lockedOn){
 				GUI.Label (new Rect (Screen.width/2 - lockOn.width, Screen.height - lockOn.height*2, lockOn.width , lockOn.height), lockOn);
 			}
-			**/
+			*/
 			// Place the Map on screen
-			GUI.Label (new Rect(Screen.width- map.width, 0, map.width, map.height), map); //400
+			GUI.Label (new Rect(Screen.width - (map.width - 40), 0, map.width, map.height * .7f), map); //400
 			//Place the crosshairs
-			GUI.Label (new Rect (Screen.width/ 2 - aim.width/2, Screen.height/ 2 - aim.height/2, aim.width, aim.height), aim);
+			GUI.Label (new Rect (Screen.width/ 2 - aim.width/2, Screen.height/ 2 - aim.height/2, aim.width * .75f, aim.height * .75f), aim);
+
+			if(_player.GetComponent<Player>().HitEnemy) {
+				GUI.Label (new Rect (Screen.width/ 2 - aim.width/2, Screen.height/ 2 - aim.height/2, aim.width * .75f, aim.height * .75f), hitmarker);
+			}
+
+			//health bar back
+			GUI.DrawTexture(new Rect(30, Screen.height - 130, healthBack.width * .80f, healthBack.height * .80f ),healthBack);
+
+			if(_player.GetComponent<Player>().Engines) {
+				GUI.DrawTexture(new Rect(30, Screen.height - 130, engine.width * .80f, engine.height * .80f ), engine);
+			}
+
+			if(_player.GetComponent<Player>().MissleTimer >= 300) {
+				GUI.DrawTexture(new Rect(30, Screen.height - 130, cDownMissle.width * .80f, cDownMissle.height * .80f ), cDownMissle);
+			}
+
+			GUI.DrawTexture(new Rect(30, Screen.height - 130, healthTop.width * .80f, healthTop.height * .80f ),healthTop);
+
 			//Place the health bar
-			GUI.DrawTexture(new Rect(50, Screen.height - 60, _player.GetComponent<Player>().Health * _player.GetComponent<Player>().HealthPercentage, 30), healthBar);
+			GUI.DrawTexture(new Rect(30, Screen.height - 130, (healthBar.width * .80f) * (_player.GetComponent<Player>().Health * _player.GetComponent<Player>().HealthPercentage/100), 95), healthBar);
+
+			Debug.Log (_player.GetComponent<Player>().Health * _player.GetComponent<Player>().HealthPercentage);
 
 		}
 	}

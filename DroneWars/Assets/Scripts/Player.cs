@@ -97,6 +97,15 @@ public class Player : MonoBehaviour {
 		set {_hitEnemy = value;}
 	}
 
+	public bool Engines {
+		get {return canFly;}
+		set {canFly = value;}
+	}
+
+	public int MissleTimer {
+		get {return _missleFiringTimer;}
+	}
+
 	// Use this for initialization
 	void Start () {
 
@@ -468,6 +477,8 @@ public class Player : MonoBehaviour {
 	// Calculate the forces that alter velocity
 	private Vector3 CalcForces ()
 	{
+		//canFly = false;
+
 		steeringForce = Vector3.zero;
 		if(!canFly)
 		{
@@ -534,7 +545,7 @@ public class Player : MonoBehaviour {
 			//Raycast -should be what we use or some other construct
 			GameObject myPlayer = GameObject.Find(_myView.observed.name);
 			Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 500.0f);
-			Debug.Log (hit.collider.gameObject);
+			//Debug.Log (hit.collider.gameObject);
 
 			
 			//For now ill just take the first player that connects to you
