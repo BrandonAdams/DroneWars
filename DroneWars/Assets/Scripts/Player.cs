@@ -56,7 +56,7 @@ public class Player : MonoBehaviour {
 	private int _bulletFiringTime, _bulletFiringTimer, /*_bulletCounter*/_missleFiringTime, _missleFiringTimer, _missleCounter;
 	private GameObject _gameCamera, /*whirringBladesObject1, whirringBladesObject2, */shootingSoundObject;	
 	//private ArrayList _bullets;
-	private bool /*_isGameOver, */_isGameStarted, _isFiringPrimary, _takingDamage/*, _isFiringSecondary*/ = false;
+	private bool _isGameStarted, _isFiringPrimary, _takingDamage,_hitEnemy = false;
 	private RaycastHit hit;
 
 	//Networking Variables
@@ -90,6 +90,11 @@ public class Player : MonoBehaviour {
 	public bool TakingDamage {
 		get {return _takingDamage;}
 		set {_takingDamage = value;}
+	}
+
+	public bool HitEnemy {
+		get {return _hitEnemy;}
+		set {_hitEnemy = value;}
 	}
 
 	// Use this for initialization
@@ -180,6 +185,8 @@ public class Player : MonoBehaviour {
 						if(hit.collider.gameObject.tag == "Drone" && !(hit.collider.gameObject.networkView.viewID.isMine)) {
 							
 							Debug.Log ("Hit Enemy Drone");
+							_hitEnemy = true;
+							Invoke ("resetCrosshairs", 2);
 							GameObject hitPlayer = hit.collider.gameObject;
 							networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, -1.0f, hit.collider.gameObject.networkView.viewID);
 							//GameObject.Find("GameManager_GO").GetComponent<aStationManager>().networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, hitPlayer.networkView.viewID);
@@ -201,6 +208,15 @@ public class Player : MonoBehaviour {
 			}
 
 
+		}
+
+	}
+
+	void resetCrosshairs() {
+
+		//if hitEnemy bool is true, then set to false
+		if(_hitEnemy) {
+			_hitEnemy = false;
 		}
 
 	}
@@ -613,8 +629,12 @@ public class Player : MonoBehaviour {
 		GameObject player = NetworkView.Find(playerID).observed.gameObject;
 		player.GetComponent<Player>().TakingDamage = true;
 		player.GetComponent<Player>().updateHealth(change);
-		player.GetComponent<Player>().TakingDamage = false;
+		player.GetComponent<Player>().Invoke("hurtReset", 2);
 		//Debug.Log(player.GetComponent<Player>().HealthPercentage);
+	}
+
+	void hurtReset() {
+		_takingDamage = false;
 	}
 
 }
