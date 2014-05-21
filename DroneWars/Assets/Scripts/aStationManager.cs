@@ -117,6 +117,8 @@ public class aStationManager : MonoBehaviour {
 			}
 			//start updating gameplay material
 			gameActive = true;
+
+
 		}
 		else if(gameActive)
 		{			 
