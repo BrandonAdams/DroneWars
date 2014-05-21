@@ -9,6 +9,7 @@ public class Bullet : MonoBehaviour {
 	private int _bulletAge;
 	private Vector3 _magLocation;
 	private bool _active;
+	private string _bulletName;
 
 	//public accessors and getters
 	public bool IsActive{
@@ -30,6 +31,10 @@ public class Bullet : MonoBehaviour {
 	public Vector3 MagLocation{
 		get { return _magLocation; }
 	}
+	public string BulletName{
+		get { return _bulletName; }
+		set { _bulletName = value; }
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -49,7 +54,6 @@ public class Bullet : MonoBehaviour {
 		_speed = 0;
 		_active = false;
 		transform.position = _magLocation;
-		Debug.Log ("BULLET POSITION RESET");
 	}
 
 	public void fire(Vector3 startingPosition, Quaternion startingRotation, float bulletSpeed, float bulletPower)
@@ -59,7 +63,6 @@ public class Bullet : MonoBehaviour {
 		transform.rotation = startingRotation;
 		_speed = bulletSpeed;
 		_power = bulletPower;
-		Debug.Log("Bullet has been fired");
 		Invoke("reset", 10.0f);
 	}
 

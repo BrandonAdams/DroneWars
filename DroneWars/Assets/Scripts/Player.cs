@@ -114,7 +114,7 @@ public class Player : MonoBehaviour {
 
 			Debug.Log ("COLLLLLLLLLLLLLISIONNNNNNNNNNN");
 
-			networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, -55.0f, _myView.viewID);
+			networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, -5.0f, _myView.viewID);
 
 			collision.collider.gameObject.GetComponent<Missle>().killMissle();
 
@@ -173,7 +173,7 @@ public class Player : MonoBehaviour {
 		shootingSoundObject = this.transform.FindChild("AudioShootGunSound").gameObject;
 		bManager = this.GetComponent<BulletManager>();
 		bManager.Owner = _myView.observed.gameObject;
-		bManager.initialize(1, 1.0f);
+		bManager.initialize(1, 20.0f);
 	}
 	
 	// Update is called once per frame
@@ -250,9 +250,7 @@ public class Player : MonoBehaviour {
 				/***************** END FIRING OUR PRIMARY GUN  ********************/
 
 				//Increase the timer for the missle
-				_missleFiringTimer++;
-
-								
+				_missleFiringTimer++;								
 			}
 
 

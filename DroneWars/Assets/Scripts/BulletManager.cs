@@ -12,7 +12,6 @@ public class BulletManager : MonoBehaviour {
 	private int _lifeSpan, _pointAtLocation;
 	private float _shellSpeed, _shellPower;
 	private GameObject _owner;
-	private int counter;
 
 	//accessors and getters
 	public GameObject Owner{
@@ -54,7 +53,7 @@ public class BulletManager : MonoBehaviour {
 		int numberOfPooledBullets = amountOfPooledBullets;
 		bullet.GetComponent<Bullet>().Speed = 0;
 		bullet.GetComponent<Bullet>().IsActive = false;
-		counter = 0;
+
 
 		if(_allBullets == null)
 		{
@@ -67,11 +66,10 @@ public class BulletManager : MonoBehaviour {
 			_shellSpeed = aSpeed;
 			_shellPower = aPower;
 			_lifeSpan = aLifeTime;
-			Network.Instantiate(bullet, bullet.GetComponent<Bullet>().MagLocation, _owner.transform.rotation, 10 + counter);
-			Debug.Log(_allBullets);
+			GameObject aBullet = (GameObject)Network.Instantiate(bullet, bullet.GetComponent<Bullet>().MagLocation, _owner.transform.rotation, 10);
+			aBullet.GetComponent<Bullet>().BulletName = "bullet" + i;
+			_allBullets.Add(aBullet);
 
-			_allBullets.Add(bullet);
-			counter++;
 		}
 
 		_pointAtLocation = 0;
@@ -81,9 +79,7 @@ public class BulletManager : MonoBehaviour {
 
 	public bool fireBullet(Vector3 startingPoint, Quaternion startingRotation)
 	{
-		counter++;
-		//if the bullet that power 
-		//Debug.Log ("Bullet IsActive = " + bulletPointer.GetComponent<Bullet>().IsActive);
+
 		if(!bulletPointer.GetComponent<Bullet>().IsActive)
 		{
 			//fire the bullet
@@ -97,23 +93,20 @@ public class BulletManager : MonoBehaviour {
 				_pointAtLocation++;
 				bulletPointer = null;
 				bulletPointer = _allBullets[_pointAtLocation].gameObject;
-				//Debug.Log("Switched Bullet");
-				//Debug.Log ("Bullet IsActive = " + bulletPointer.GetComponent<Bullet>().IsActive);
+
 			}
 			//if we are at the end of our array point at the beginning bullet again
 			else if(_pointAtLocation >= _allBullets.Count - 1)
 			{
 				_pointAtLocation = 0;
 				bulletPointer = _allBullets[_pointAtLocation].gameObject;
-				//Debug.Log("Back to beginning of array");
+				Debug.Log("Back to beginning of bullet array");
 				//Debug.Log ("Bullet IsActive = " + bulletPointer.GetComponent<Bullet>().IsActive);
 			}
-			//Debug.Log("Fired Bullet" + counter);
+
 			return true;
 		}
-		//Debug.Log("Reloading more ammo"+ counter);
 		return false;
-
 	}
 
 }
