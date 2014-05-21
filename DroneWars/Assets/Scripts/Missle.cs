@@ -9,7 +9,7 @@ public class Missle : MonoBehaviour {
 	private int _missleTag, _missleLifePeriod, _missleCurrentLife, _missleGuidanceActive;
 	private string _missleName;
 	private NetworkViewID _myID, _preyID;
-	//private bool _fired;
+	private bool _destoryed;
 	//private NetworkView _myView;
 
 	//public accessors and getters
@@ -32,6 +32,10 @@ public class Missle : MonoBehaviour {
 		set { _preyID = value; } 
 	}
 
+	public bool Destroyed {
+		set {_destoryed = value;}
+	}
+
 	// Use this for initialization
 	void Start () {
 		//total life span of a missle
@@ -45,6 +49,7 @@ public class Missle : MonoBehaviour {
 		//_myID = this.networkView.viewID;
 		//_myView = NetworkView.Find(_myID);
 		_speed = 2.0f;
+		_destoryed = false;
 	
 	}
 
@@ -102,10 +107,7 @@ public class Missle : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-	//Debug.Log("PreyID: " + _preyID);
-		//Debug.Log ("Speed: " + _speed);
-		//Debug.Log("Before: " + transform.forward);
+	
 
 		//Hunting our target
 		//Does Not begin searching until fired, which is noted in the initialize function
@@ -143,8 +145,20 @@ public class Missle : MonoBehaviour {
 	}
 
 	void destroyMissile() {
-		Debug.Log("Destroyed missle");
-		Network.Destroy(this.gameObject);
+
+		if(!_destoryed) {
+			Debug.Log("Destroyed missle");
+			Network.Destroy(this.gameObject);
+			networkView.RPC ("setDestruction", RPCMode.AllBuffered, this.gameObject.networkView.viewID);
+		}
+	}
+
+	[RPC]
+	void setDestruction(NetworkViewID id) {
+
+		NetworkView myView = NetworkView.Find(id);
+		myView.observed.gameObject.GetComponent<Missle>().Destroyed = true;
+
 	}
 
 	void HuntTarget()
