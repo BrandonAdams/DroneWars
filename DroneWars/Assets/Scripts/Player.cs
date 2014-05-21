@@ -105,7 +105,7 @@ public class Player : MonoBehaviour {
 	public int MissleTimer {
 		get {return _missleFiringTimer;}
 	}
-
+	/*
 	void OnControllerColliderHit(ControllerColliderHit collision) {
 		
 		Debug.Log (collision.collider.gameObject);
@@ -142,8 +142,8 @@ public class Player : MonoBehaviour {
 			//Sets missle's life over maximum, destorying missle
 			_missleCurrentLife = _missleLifePeriod + 1;
 			
-		}*/
-	}
+		}
+	}*/
 
 	// Use this for initialization
 	void Start () {
@@ -173,7 +173,7 @@ public class Player : MonoBehaviour {
 		shootingSoundObject = this.transform.FindChild("AudioShootGunSound").gameObject;
 		bManager = this.GetComponent<BulletManager>();
 		bManager.Owner = _myView.observed.gameObject;
-		bManager.initialize(1, 20.0f);
+		bManager.initialize(1, 20.0f, 20);
 	}
 	
 	// Update is called once per frame
