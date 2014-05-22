@@ -168,7 +168,7 @@ public class aStationManager : MonoBehaviour {
 			GUI.Label (new Rect (Screen.width/ 2 - aim.width/2 + 15, Screen.height/ 2 - aim.height/2 + 15, aim.width * .75f, aim.height * .75f), aim);
 
 			if(_player.GetComponent<Player>().HitEnemy) {
-				GUI.Label (new Rect (Screen.width/ 2 - aim.width/2, Screen.height/ 2 - aim.height/2, aim.width * .75f, aim.height * .75f), hitmarker);
+				GUI.Label (new Rect (Screen.width/ 2 - aim.width/2 + 15, Screen.height/ 2 - aim.height/2 + 15, aim.width * .75f, aim.height * .75f), hitmarker);
 			}
 
 			//health bar back

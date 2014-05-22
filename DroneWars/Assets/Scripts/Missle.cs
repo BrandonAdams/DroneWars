@@ -43,20 +43,20 @@ public class Missle : MonoBehaviour {
 		//network components
 		//_myID = this.networkView.viewID;
 		//_myView = NetworkView.Find(_myID);
-		_speed = 2.0f;
+		_speed = 5.0f;
 	
 	}
 
 
 	void OnCollisionEnter(Collision collision) {
 
-		Debug.Log ("COLLLLLLLLLLLLLISIONNNNNNNNNNN");
+		//Debug.Log ("COLLLLLLLLLLLLLISIONNNNNNNNNNN");
 
 		if(_preyID != NetworkViewID.unassigned){
 			NetworkView targetView = NetworkView.Find(_preyID);
 
 			if(collision.collider.gameObject == targetView.observed.gameObject) { //checks if the collided object is the drone that we are following
-				Debug.Log ("destory 1");
+				//Debug.Log ("destory 1");
 				collision.collider.gameObject.GetComponent<Player>().networkHealthUpdate(-15.0f);
 				destroyMissile();
 			
@@ -64,7 +64,7 @@ public class Missle : MonoBehaviour {
 			}
 
 		}else if(collision.collider.gameObject.tag == "Drone" && collision.collider.gameObject.networkView.viewID.isMine == false) { //checks if the collided object is a Drone, even if it isn't one we are seeking
-			Debug.Log ("destory 2");
+			//Debug.Log ("destory 2");
 			collision.collider.gameObject.GetComponent<Player>().networkHealthUpdate(-15.0f);
 			destroyMissile();
 		
@@ -73,7 +73,7 @@ public class Missle : MonoBehaviour {
 
 			if(collision.collider.gameObject.tag != "Drone") {
 				//Sets missle's life over maximum, destorying missle
-				Debug.Log ("destory 3");
+				//Debug.Log ("destory 3");
 				destroyMissile();
 
 			}
@@ -115,7 +115,7 @@ public class Missle : MonoBehaviour {
 		if(_missleCurrentLife > _missleLifePeriod)
 		{
 
-			Debug.Log("Destroyed missle 2222");
+			//Debug.Log("Destroyed missle 2222");
 			Object.Destroy(this.gameObject);
 		}
 
@@ -124,7 +124,7 @@ public class Missle : MonoBehaviour {
 
 	void destroyMissile() {
 		
-			Debug.Log("Destroyed missle");
+			//Debug.Log("Destroyed missle");
 			Object.Destroy(this.gameObject);
 	}
 
