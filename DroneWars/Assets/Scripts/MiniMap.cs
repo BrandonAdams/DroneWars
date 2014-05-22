@@ -20,7 +20,7 @@ public class MiniMap : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-		this.transform.position = new Vector3(toFollow.transform.position.x,150,toFollow.transform.position.z);
+		this.transform.position = new Vector3(toFollow.transform.position.x,350,toFollow.transform.position.z);
 		
 		
 	}

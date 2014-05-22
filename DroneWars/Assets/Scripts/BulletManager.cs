@@ -83,7 +83,7 @@ public class BulletManager : MonoBehaviour {
 		if(!bulletPointer.GetComponent<Bullet>().IsActive)
 		{
 			//fire the bullet
-			bulletPointer.GetComponent<Bullet>().fire(_owner.transform.position, _owner.transform.rotation, _shellSpeed, _shellPower);
+			bulletPointer.GetComponent<Bullet>().fire(startingPoint, _owner.transform.rotation, _shellSpeed, _shellPower);
 			//set the bullet to be active
 			bulletPointer.GetComponent<Bullet>().IsActive = true;
 			//Debug.Log ("Bullet IsActive = " + bulletPointer.GetComponent<Bullet>().IsActive);

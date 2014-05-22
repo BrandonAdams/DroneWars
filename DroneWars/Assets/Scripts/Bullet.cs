@@ -63,7 +63,7 @@ public class Bullet : MonoBehaviour {
 		transform.rotation = startingRotation;
 		_speed = bulletSpeed;
 		_power = bulletPower;
-		Invoke("reset", 10.0f);
+		Invoke("reset", 5.0f);
 	}
 
 

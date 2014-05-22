@@ -9,7 +9,6 @@ public class Missle : MonoBehaviour {
 	private int _missleTag, _missleLifePeriod, _missleCurrentLife, _missleGuidanceActive;
 	private string _missleName;
 	private NetworkViewID _myID, _preyID;
-	private bool _destoryed;
 	//private NetworkView _myView;
 
 	//public accessors and getters
@@ -32,10 +31,6 @@ public class Missle : MonoBehaviour {
 		set { _preyID = value; } 
 	}
 
-	public bool Destroyed {
-		set {_destoryed = value;}
-	}
-
 	// Use this for initialization
 	void Start () {
 		//total life span of a missle
@@ -49,7 +44,6 @@ public class Missle : MonoBehaviour {
 		//_myID = this.networkView.viewID;
 		//_myView = NetworkView.Find(_myID);
 		_speed = 2.0f;
-		_destoryed = false;
 	
 	}
 
@@ -98,11 +92,7 @@ public class Missle : MonoBehaviour {
 		_power = misslePower;
 		_missleName = playerName + "Missle" + tagID;
 		_missleTag = tagID;
-		//Debug.Log (target);
-		//Debug.Log (playerName);
 		_preyID = target;
-		//_fired = true;
-		//Debug.Log (_preyID);
 	}
 	
 	// Update is called once per frame
@@ -113,12 +103,11 @@ public class Missle : MonoBehaviour {
 		//Does Not begin searching until fired, which is noted in the initialize function
 	
 		HuntTarget();
-		
-		//Debug.Log("After: " + transform.forward);
+
 
 		//transform.forward.Normalize();
 		transform.position += transform.forward * _speed;
-		//Debug.Log("My ID  = " + _myID);
+
 		//make our missle older
 		_missleCurrentLife++;
 		//our missle has died of old age
@@ -127,39 +116,18 @@ public class Missle : MonoBehaviour {
 		{
 
 			Debug.Log("Destroyed missle 2222");
-			Network.Destroy(this.gameObject);
-			/*GameObject[] liveMissles = GameObject.FindGameObjectsWithTag("Missle");
-			for(int i = 0; i < liveMissles.Length; i++)
-			{
-				if(liveMissles[i].networkView.isMine)
-				{
-					Debug.Log("Destroyed missle");
-					Network.Destroy(liveMissles[i]);
-					break;
-				}
-			}
-			*/
+			Object.Destroy(this.gameObject);
 		}
 
 	
 	}
 
 	void destroyMissile() {
-
-		if(!_destoryed) {
+		
 			Debug.Log("Destroyed missle");
-			Network.Destroy(this.gameObject);
-			networkView.RPC ("setDestruction", RPCMode.AllBuffered, this.gameObject.networkView.viewID);
-		}
+			Object.Destroy(this.gameObject);
 	}
 
-	[RPC]
-	void setDestruction(NetworkViewID id) {
-
-		NetworkView myView = NetworkView.Find(id);
-		myView.observed.gameObject.GetComponent<Missle>().Destroyed = true;
-
-	}
 
 	void HuntTarget()
 	{

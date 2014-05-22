@@ -105,45 +105,6 @@ public class Player : MonoBehaviour {
 	public int MissleTimer {
 		get {return _missleFiringTimer;}
 	}
-	/*
-	void OnControllerColliderHit(ControllerColliderHit collision) {
-		
-		Debug.Log (collision.collider.gameObject);
-
-		if(collision.collider.gameObject.tag == "Missle") {
-
-			Debug.Log ("COLLLLLLLLLLLLLISIONNNNNNNNNNN");
-
-			networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, -5.0f, _myView.viewID);
-
-			collision.collider.gameObject.GetComponent<Missle>().killMissle();
-
-			Debug.Log ("Dealt Damage !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		}
-
-		/*
-		if(_preyID != NetworkViewID.unassigned){
-			NetworkView targetView = NetworkView.Find(_preyID);
-			
-			if(collision.collider.gameObject == targetView.observed.gameObject) { //checks if the collided object is the drone that we are following
-				
-				collision.collider.gameObject.GetComponent<Player>().networkHealthUpdate(15.0f);
-				_missleCurrentLife = _missleLifePeriod + 1;
-				
-			}
-			
-		}else if(collision.collider.gameObject.tag == "Drone") { //checks if the collided object is a Drone, even if it isn't one we are seeking
-			
-			collision.collider.gameObject.GetComponent<Player>().networkHealthUpdate(15.0f);
-			_missleCurrentLife = _missleLifePeriod + 1;
-			
-		}else {
-			
-			//Sets missle's life over maximum, destorying missle
-			_missleCurrentLife = _missleLifePeriod + 1;
-			
-		}
-	}*/
 
 	// Use this for initialization
 	void Start () {
@@ -223,7 +184,7 @@ public class Player : MonoBehaviour {
 						//Network.Instantiate(bullet, bulletSpawnPosition, myPlayer.transform.rotation, 1);
 
 						GameObject myPlayer = GameObject.Find(_myView.observed.name);
-						Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 500.0f);
+						Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 1000.0f);
 						Debug.Log (hit.collider.gameObject);
 
 						//fire a bullet object for firing conveyance
@@ -232,9 +193,9 @@ public class Player : MonoBehaviour {
 
 						if(hit.collider.gameObject.tag == "Drone" && !(hit.collider.gameObject.networkView.viewID.isMine)) {
 							
-							Debug.Log ("Hit Enemy Drone");
+							//Debug.Log ("Hit Enemy Drone");
 							_hitEnemy = true;
-							Invoke ("resetCrosshairs", 2);
+							Invoke ("resetCrosshairs", .3f);
 							GameObject hitPlayer = hit.collider.gameObject;
 							networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, -3.0f, hit.collider.gameObject.networkView.viewID);
 							//GameObject.Find("GameManager_GO").GetComponent<aStationManager>().networkView.RPC("updatePlayerHealth", RPCMode.AllBuffered, hitPlayer.networkView.viewID);
@@ -677,7 +638,7 @@ public class Player : MonoBehaviour {
 		GameObject player = NetworkView.Find(playerID).observed.gameObject;
 		player.GetComponent<Player>().TakingDamage = true;
 		player.GetComponent<Player>().updateHealth(change);
-		player.GetComponent<Player>().Invoke("hurtReset", 2);
+		player.GetComponent<Player>().Invoke("hurtReset", .5f);
 		//Debug.Log(player.GetComponent<Player>().HealthPercentage);
 	}
 
