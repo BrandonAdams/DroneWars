@@ -106,6 +106,10 @@ public class Player : MonoBehaviour {
 		get {return _missleFiringTimer;}
 	}
 
+	public bool CanFly{
+		get { return canFly; }
+	}
+
 	// Use this for initialization
 	void Start () {
 
@@ -533,42 +537,47 @@ public class Player : MonoBehaviour {
 	{
 		if(Input.GetKeyDown (KeyCode.Mouse0))
 		{
-			_isFiringPrimary = true;		
+			if(canFly)
+			{
+				_isFiringPrimary = true;
+			}					
 		}
 		
 		if(Input.GetKeyDown (KeyCode.Mouse1))
 		{
-			
-			Transform target = this.transform;
-			//Raycast -should be what we use or some other construct
-			GameObject myPlayer = GameObject.Find(_myView.observed.name);
-			Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 500.0f);
-			//Debug.Log (hit.collider.gameObject);
-
-			
-			//For now ill just take the first player that connects to you
-			if(hit.collider.gameObject.tag == "Drone")
+			if(canFly)
 			{
-				target = hit.collider.gameObject.transform;
-			}
-
-			
-			//Fire secondary weapon here 
-			if(_missleFiringTimer > _missleFiringTime)
-			{
-				//create a bullet and place it just in front of the player
-				Vector3 missleSpawnPosition = myPlayer.transform.position; 
-				missleSpawnPosition += myPlayer.transform.forward * 8;
-				//Debug.Log(missle);
-
-				Missle r = (Missle)Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 1);
-
-				if(target != this.transform)
-					networkView.RPC("initiateMissile", RPCMode.AllBuffered, r.networkView.viewID, target.gameObject.networkView.viewID);
-
-				//reset the firing timer
-				_missleFiringTimer = 0;
-				_missleCounter++;				
+				Transform target = this.transform;
+				//Raycast -should be what we use or some other construct
+				GameObject myPlayer = GameObject.Find(_myView.observed.name);
+				Physics.Raycast(myPlayer.transform.position, myPlayer.transform.forward, out hit, 500.0f);
+				//Debug.Log (hit.collider.gameObject);
+				
+				
+				//For now ill just take the first player that connects to you
+				if(hit.collider.gameObject.tag == "Drone")
+				{
+					target = hit.collider.gameObject.transform;
+				}
+				
+				
+				//Fire secondary weapon here 
+				if(_missleFiringTimer > _missleFiringTime)
+				{
+					//create a bullet and place it just in front of the player
+					Vector3 missleSpawnPosition = myPlayer.transform.position; 
+					missleSpawnPosition += myPlayer.transform.forward * 8;
+					//Debug.Log(missle);
+					
+					Missle r = (Missle)Network.Instantiate(missle, missleSpawnPosition, myPlayer.transform.rotation, 1);
+					
+					if(target != this.transform)
+						networkView.RPC("initiateMissile", RPCMode.AllBuffered, r.networkView.viewID, target.gameObject.networkView.viewID);
+					
+					//reset the firing timer
+					_missleFiringTimer = 0;
+					_missleCounter++;				
+				}
 			}
 		}
 

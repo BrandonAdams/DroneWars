@@ -16,6 +16,7 @@ public class aStationManager : MonoBehaviour {
 	private string altReady = "Health";
 	private float _amountHealthNewValue = 500.0f;
 	private float _totalHealth = 500.0f;
+	private bool _playingSolo = true;
 
 
 	//Public variables
@@ -86,6 +87,8 @@ public class aStationManager : MonoBehaviour {
 			gameMap = GameMaps.AbandonedStation;  //THIS NEEDS TO CHANGE ********** NOT PERMANENT!!!!!!!!!!!!!!!!!!!!!!!!!
 			//have the host collect all the players playing
 			players = GameObject.FindGameObjectsWithTag("Drone");
+			if(players.Length > 1)
+				_playingSolo = false;
 			//have the host place all the players around the map
 			for(int i = 0; i < players.Length; i++)
 			{
@@ -121,7 +124,30 @@ public class aStationManager : MonoBehaviour {
 
 		}
 		else if(gameActive)
-		{			 
+		{	
+			if(!_playingSolo)
+			{
+				int playersStillActive = 0;
+				for(int i = 0; i < players.Length; i++)
+				{
+					if(players[i].GetComponent<Player>().CanFly)
+					{
+						playersStillActive++;
+					}
+				}
+				
+				if(playersStillActive <= 1)
+				{
+					for(int i = 0; i < players.Length; i++)
+					{
+						if(players[i].GetComponent<Player>().IsTheHost)
+						{
+							GameObject server = GameObject.Find("Server_GO");
+							server.GetComponent<Server>().DisconnectNetwork();
+						}
+					}
+				}
+			}
 
 		}
 		else if(gameOver)
